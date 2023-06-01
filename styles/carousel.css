@@ -1,0 +1,43 @@
+.header {
+    height: 70vh;
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.6) 20%, rgba(0, 0, 0, 0.8)), url("../assets/media/img1.jpg");
+    object-fit: contain;
+    background-size: cover;
+    background-position: center;
+
+    display: grid;
+    place-items: center;
+}
+
+.body-text {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.body-text > .h1 {
+    font-size: 3rem;
+    font-family: "Metropolis Black";
+}
+
+.body-text > .subtitle {
+    font: 1.5em "Metropolis";
+    letter-spacing: 3.3px;
+}
+
+.header > .body-text > .reserve-now-button {
+    background-color: var(--secondary);
+    border: 0;
+    border-radius: 5px;
+    font-family: "Metropolis Black";
+    margin-top: 30px;
+    padding: 15px 30px 15px 30px;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+
+.header > .body-text > .reserve-now-button:hover {
+    box-shadow: 0 5px 3px black;
+    transition-duration: 0.3s;
+}

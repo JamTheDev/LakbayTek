@@ -1,0 +1,56 @@
+section.__about {
+    height: 600px;
+    width: 100%;
+    background-color: #C0CEFF;
+
+    display: flex;
+    flex-direction: row;
+
+}
+
+section.__about>* {
+    flex: 1;
+}
+
+section.__about>.left-img {
+    background-image: url("/assets/media/cq_about.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    object-fit: contain;
+}
+
+section.__about>.text-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 50px;
+}
+
+section.__about>.text-content>* {
+    padding: 20px 0 20px 0;
+}
+
+section.__about>.text-content>.title {
+    font-family: "Metropolis Black";
+    font-size: 2rem;
+}
+
+section.__about>.text-content>.subtitle {
+    font-family: "Metropolis";
+    font-size: 1.7rem;
+    line-height: 1.5;
+}
+
+section.__about>.text-content>button {
+    font-family: "Metropolis Black";
+    font-size: 1.3rem;
+    border: 0;
+    border-radius: 5px;
+    padding: 15px 30px 15px 30px;
+    width: fit-content;
+    align-self: end;
+    background-color: #325FFF;
+    color: white;
+    box-shadow: 0 5px 7px black;
+
+}
