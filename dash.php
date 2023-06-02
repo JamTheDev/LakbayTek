@@ -8,6 +8,6 @@ $title = "Admin Dashboard";
 <body>
     <?php require("components/navbardash.php") ?>
     <?php require("components/dashboard/calendar.php") ?>
-
+<p> hi</p>
 </body>
 </html>
