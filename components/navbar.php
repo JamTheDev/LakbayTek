@@ -24,7 +24,7 @@
             <div class="dropdown-content">
                 <a href="#" class="">
                     <a href="#" class="">
-                        <?php if (autologin()) : ?>
+                        <?php if (verifyRememberMeToken()) : ?>
                             <a href="profile.php">View Profile</a>
                             <a href="reservation.php">Reservations</a>
                             <a href="logout.php">Sign out</a>

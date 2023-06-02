@@ -17,7 +17,7 @@ require_once("config.php");
     </style>
     <?php require("components/navbar.php"); ?>
 
-    <?php if (autologin()) : ?>
+    <?php if (verifyRememberMeToken()) : ?>
         <form action="" method="post">
             <?php 
             $redir_page = $_POST['current_page'] ?? "welcome";

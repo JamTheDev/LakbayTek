@@ -120,12 +120,15 @@
                     <br>
                     <br>
                     <?php
-                    switch ($err) {
-                        case 2:
-                            echo "Unknown Account!";
+                    switch (intval($_GET["err"])) {
+                        case AuthenticationErrors::NoAccount:
+                            echo "Account does not exist!";
                             break;
-                        case 0:
-                            echo "Wrong password!";
+                        case AuthenticationErrors::WrongPassword:
+                            echo "Wrong password! Please try again.";
+                            break;
+                        default:
+                            echo "Unknown Error, please try again!";
                             break;
                     }
                     ?>

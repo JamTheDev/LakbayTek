@@ -5,7 +5,8 @@ define('BASE_PATH', dirname(__FILE__));
 session_set_cookie_params(0);
 session_start();
 
-require_once("backend/auth.php");
+require_once("controller/AuthController.php");
+require_once("enums/ErrorEnums.php");
 ?>
 
 <head>
