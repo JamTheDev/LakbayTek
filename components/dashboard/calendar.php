@@ -8,7 +8,7 @@
       padding: 0;
       display: flex;
       flex-direction: column;
-      font-family: Arial, sans-serif;
+      font-family: Metropolis, sans-serif;
     }
     
     .navbar {
@@ -18,16 +18,17 @@
     }
 
     .content {
-      display: flex;
       flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .calendar-section {
-      margin: 20px;
-      padding: 20px;
-      width: 600px;
+      margin: auto;
+      padding: 70px;
+      width: 1000px;
+      height: 400px;
       background-color: #f2f2f2;
-      height: 450px;
     }
 
     .calendar {
@@ -80,56 +81,64 @@
     .month-navigation button:hover {
       background-color: #EEC945;
     }
-    
+
     .summary-section {
-      margin: 20px;
+      margin: 40px auto;
       padding: 20px;
-      width: 600px;
+      width: 1000px;
       background-color: #f2f2f2;
-      height: 100%; /* Set height to 100% */
     }
-    
+
     .summary-section h2 {
       margin-top: 0;
     }
-    
-    .summary-section ul {
-      list-style-type: none;
-      padding: 0;
+
+    .summary-section table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "Metropolis";
     }
-    
-    .summary-section li {
-      margin-bottom: 10px;
+
+    .summary-section th,
+    .summary-section td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      
+
     }
-    
-    .left-section {
-      flex: 1;
+
+    .summary-section th {
+      background-color: #f2f2f2;
+      color: #000000;
+	  text-align: center;
     }
+
+ .summary-section td {
+      background-color: #f2f2f2;
+      color: #000000;
+	  font-family: "Metropolis";
+	  text-align: left;
+    }
+     
+    .summary-section .booked {
     
-    .right-section {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      color: #0000000;
+    }
+
+    .calendar-container {
+      order: 1;
+    }
+
+    .summary-container {
+      order: 2;
     }
 	
-	.list-box {
-	  background-color: #7EBB74;
-	  padding: 10px;
-	  margin-bottom: 10px;
-	  border: 1px solid black;
-	  font-family: "Metropolis";
-	}
-
-	.list-box:hover {
-	  background-color: #EEC945;
-	}
   </style>
 </head>
 <body>
   
   <div class="content">
-    <div class="left-section">
+    <div class="calendar-container">
       <div class="calendar-section">
         <div class="calendar">
           <div class="month-navigation">
@@ -155,10 +164,19 @@
       </div>
     </div>
 
-    <div class="right-section">
+    <div class="summary-container">
       <div class="summary-section">
-        <h2>Reservation Summary</h2>
-        <ul id="reservationSummary"></ul>
+        <h2>List of Approved Reservations</h2><br>
+        <table>
+          <thead>
+            <tr class="columns">
+              <th>User Name</th>
+              <th>Reserved Date</th>
+              <th>Time of Check-In</th>
+            </tr>
+          </thead>
+          <tbody id="reservationSummary"></tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -232,21 +250,31 @@
       return availabilityEntry ? availabilityEntry.status : '';
     }
 
-   // Function to display the reservation summary
+    // Function to display the reservation summary
     function displayReservationSummary() {
       var reservationSummaryElement = document.getElementById('reservationSummary');
       reservationSummaryElement.innerHTML = '';
 
       availability.forEach(function(entry) {
         if (entry.status === 'booked') {
-          var listItem = document.createElement('li');
-          listItem.textContent = 'User: ' + entry.user + ', Date: ' + entry.date + ', Time: ' + entry.time;
+          var row = document.createElement('tr');
+          var userCell = document.createElement('td');
+          var dateCell = document.createElement('td');
+          var timeCell = document.createElement('td');
 
-          var boxContainer = document.createElement('div');
-          boxContainer.classList.add('list-box');
-          boxContainer.appendChild(listItem);
+          userCell.textContent = entry.user;
+          dateCell.textContent = entry.date;
+          timeCell.textContent = entry.time;
 
-          reservationSummaryElement.appendChild(boxContainer);
+          row.appendChild(userCell);
+          row.appendChild(dateCell);
+          row.appendChild(timeCell);
+
+          if (entry.status === 'booked') {
+            row.classList.add('booked');
+          }
+
+          reservationSummaryElement.appendChild(row);
         }
       });
     }
