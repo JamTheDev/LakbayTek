@@ -1,11 +1,17 @@
 <style>
-    section.welcome_title {
+    main {
         height: 100%;
+        width: 100%;
         background-color: #FDF8E5;
         position: relative;
+        display: grid;
+        place-items: center;
         text-align: center;
-        flex: 1;
-        line-height: 30px;
+    }
+
+    section.welcome_title {
+        height: 100%;
+        width: 60%;
     }
 
     section.welcome_title {
@@ -14,62 +20,95 @@
         justify-content: center;
     }
 
-    section.welcome_title>.divwelcome>span:nth-child(1) {
+    div.__card-points {
+        display: flex;
+        flex-direction: row;
+        max-width: 100%;
+        height: 40%;
+    }
+
+    div.__card-container {
+        flex: 1;
+        margin: 10px;
+    }
+
+    div.__card {
+        background-color: #e5e5e5;
+        border-radius: 5px;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    div.__card>.__header-text {
         font-family: "Metropolis Black";
-        font-size: 80px;
     }
 
-    section.welcome_title>.divstart>span:nth-child(1) {
-
-        font-family: "Metropolis";
-        font-size: 25px;
-        letter-spacing: 3px;
-
-
+    div.__card>i {
+        font-size: 5rem;
     }
 
-    .butt {
-        border: none;
-        color: #000;
-        background-color: #EEC945;
-        padding: 10px 30px;
-        text-align: center;
-        font-family: "Metropolis";
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 20px auto;
-        cursor: pointer;
-        box-shadow: 0px 2px 5px #888888;
+    div.__card>* {
+        padding: 10px 0;
     }
 
-    .butt:hover {
-        border: none;
-        color: #000;
-        background-color: #7EBB74;
-        padding: 10px 30px;
-        text-align: center;
-        font-family: "Metropolis";
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 20px auto;
-        cursor: pointer;
-        box-shadow: 0px 5px 10px #888888;
-    }
 </style>
 
 
-<section class="welcome_title">
-    <div class="divwelcome">
-        <span>WELCOME!</span>
-    </div>
-    <div class="divstart">
-        <span>LET US HELP YOU GET STARTED!</span>
-    </div>
+<main>
+    <section class="welcome_title">
+        <div class="__title">
+            <span>WELCOME!</span>
+        </div>
+        <div class="__subtitle">
+            <span>This step-by-step process should help you reserve a facility at Casa Querencia!</span>
+        </div>
 
-    <input class="butt" type="submit" value="GET STARTED">
-    <input type="text" name="current_page" value="capacity" hidden>
-</section>
+        <div class="__card-points">
+            <div class="__card-container">
+                <div class="__card">
+                    <span class="__header-text">
+                        STEP 1
+                    </span>
 
+                    <i class="fa-solid fa-user-group"></i>
 
+                    <span>PACKAGE SELECTION</span>
+                </div>
+            </div>
+            <div class="__card-container">
+                <div class="__card">
+                    <span class="__header-text">
+                        STEP 2
+                    </span>
+
+                    <i class="fa-solid fa-calendar"></i>
+
+                    <span>DATE OF RESERVATION</span>
+                </div>
+            </div>
+            <div class="__card-container">
+                <div class="__card">
+                    <span class="__header-text">
+                        STEP 3
+                    </span>
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <span>CONFIRMATION OF DETAILS</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="__subtitle">
+            <span>The following process should help you reserve much faster without hassle!</span>
+        </div>
+
+        <div class="navigation-buttons">
+            <button type="button" onclick="changePage('home')" class="option-button">BACK</button>
+            <button type="button" onclick="changePage('capacity')" class="option-button">PROCEED</button>
+        </div>
+    </section>
+</main>

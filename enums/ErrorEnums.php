@@ -7,6 +7,8 @@ enum AuthenticationErrors: int
     case AccountAlreadyExists = 2;
     case PasswordsNotMatching = 3;
     case NoSessionID = 4;
+    case None = 5;
+    case ExpiredSessionID = 6;
 }
 
 enum OperationErrors: int {

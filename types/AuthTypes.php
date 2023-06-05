@@ -1,4 +1,10 @@
 <?php
+if (__FILE__ == $_SERVER['SCRIPT_FILENAME']) {
+    die("This file cannot be accessed directly.");
+}
+
+include("../enums/ErrorEnums.php");
+include("enums/ErrorEnums.php");
 
 class User
 {
@@ -10,7 +16,7 @@ class User
     public mixed $date;
     public mixed $password;
 
-    public mixed $ERR_CODE = NULL;
+    public mixed $ERR_CODE = AuthenticationErrors::None;
 
     public function __construct(
         mixed $user_id = NULL,
@@ -20,7 +26,7 @@ class User
         mixed $gender = NULL,
         mixed $date = NULL,
         mixed $password = NULL,
-        mixed $ERR_CODE = NULL
+        mixed $ERR_CODE = AuthenticationErrors::None
     ) {
         $this->$user_id = $user_id;
         $this->$username = $username;
@@ -32,9 +38,13 @@ class User
         $this->ERR_CODE = $ERR_CODE;
     }
 
+    public function is_null(): bool {
+        return is_null($this->user_id); 
+    }
+
     public static function raise_error(mixed $err): User
     {
-        return new self(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $err);
+        return new self(NULL, NULL, NULL, NULL, NULL, NULL, NULL, $err);
     }
 
     public static function from_assoc(mixed $_obj): User

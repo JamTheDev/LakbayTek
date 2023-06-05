@@ -9,7 +9,12 @@ if (isset($_POST["__user-email"]) && isset($_POST["__user-password"])) {
 
     $response = login($email, $password, true);
 
-    if (!empty($response->$ERR_MSG)) {
-        
+    if ($response->ERR_CODE->value !== AuthenticationErrors::None->value) {
+        $err = $response->ERR_CODE->value;
+        header("Location: ../login.php?err=$err");
+        exit();
+        return;
     }
+
+    header("Location: ../index.php");
 }

@@ -6,7 +6,7 @@
 
 <nav class="_navbar">
     <div class="left">
-        <div class="logos">
+        <div class="logos" onclick="window.location.href = 'index.php'">
             <img src="assets/logos/cq_logo.png" alt="QC Logo" class="logo">
             <span>Casa Querencia</span>
         </div>
@@ -15,7 +15,7 @@
     <div class="right">
         <div class="buttons">
             <a href="index.php">HOME</a>
-            <a href="">PACKAGES</a>
+            <a href="packages.php">PACKAGES</a>
             <a href="gallery.php">GALLERY</a>
             <a href="about-us.php">ABOUT</a>
             <a href="#" class="dropdown-toggle">
@@ -26,7 +26,7 @@
                     <a href="#" class="">
                         <?php if (verifyRememberMeToken()) : ?>
                             <a href="profile.php">View Profile</a>
-                            <a href="reservation.php">Reservations</a>
+                            <a href="insert_reservation.php">Reservations</a>
                             <a href="logout.php">Sign out</a>
                         <?php else : ?>
                             <a href="#" class="" />

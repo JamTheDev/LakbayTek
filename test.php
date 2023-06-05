@@ -1,5 +1,5 @@
 <?php
-require_once("backend/auth.php");
+require_once("api/auth.php");
 try {
 
     // $dateToday = new DateTime();

@@ -182,7 +182,7 @@ $reservation_id = genid(9, 4);
             async function insertIntoDb() {
                 console.log("asdjaodj");
                 try {
-                    const response = await fetch("./backend/reservation.php", {
+                    const response = await fetch("./api/insert_reservation.php", {
                         method: "POST",
                         body: JSON.stringify({
                             "reservation_id": "<?php echo  $reservation_id ?>",

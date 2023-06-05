@@ -1,4 +1,7 @@
 <?php
+if (__FILE__ == $_SERVER['SCRIPT_FILENAME']) {
+    die("This file cannot be accessed directly.");
+}
 
 class DatabaseConnection extends mysqli
 {

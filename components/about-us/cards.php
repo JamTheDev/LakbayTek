@@ -14,14 +14,6 @@
     div.__card {
         background-color: #e5e5e5;
         aspect-ratio: 13/16;
-
-        padding: 10px;
-    }
-
-    div.__card {
-        background-color: #e5e5e5;
-        aspect-ratio: 13/16;
-
         border-radius: 5px;
 
         padding: 10px;

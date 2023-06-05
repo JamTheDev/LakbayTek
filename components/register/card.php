@@ -153,7 +153,7 @@
             </div>
         </div>
 
-        <form action="backend/register.php" method="post">
+        <form action="api/register.php" method="post">
             <div class="__custom-input">
                 <i class="fa-solid fa-envelope"></i>
                 <input type="email" name="__user-email" placeholder="USER EMAIL" value="<?php echo $_GET['email']; ?>" required>

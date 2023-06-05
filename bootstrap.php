@@ -1,4 +1,4 @@
 <?php
     
-require_once("backend/conn.php");
+require_once("api/conn.php");
 $conn = DatabaseConnection::getInstance();

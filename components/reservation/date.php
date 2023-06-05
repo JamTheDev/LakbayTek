@@ -1,91 +1,32 @@
 <style>
-  body {
-    background-color: #FDF8E5;
-  }
-
   .date-bg {
+    margin: 0;
+    padding: 0;
     height: 100%;
     width: 100%;
-    display: grid;
-    place-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
-  div.date-card {
-    border: 1px solid black;
-    height: fit-content;
-    position: relative;
-    text-align: center;
-    flex: 1;
-    line-height: 30px;
-    width: 490px;
-    margin: 60px auto;
-    padding: 50px 40px 20px 40px;
-    border-radius: 10px;
-    background-color: #ffffffff;
+  .date-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    height: 100%;
   }
 
-  .cap>span:nth-child(1) {
-    font-family: "Metropolis Black";
-    font-size: 40px;
-  }
-
-  .cap {
-    font-family: "Metropolis";
-    font-size: 19px;
-    text-align: left;
-  }
-
-  .option-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #ffffff;
-    border: 1px solid grey;
-    border-radius: 3px;
-    margin: 10px 20px;
-    cursor: pointer;
-    font-family: "Metropolis Black";
-  }
-
-  .selected {
-    background-color: #7EBB74;
-  }
-
-  .navigation-buttons {
-    margin-top: 50px;
-  }
-
-  .navigation-buttons button {
-    border: none;
-    color: #000;
-    background-color: #EEC945;
-    padding: 10px 40px;
-    text-align: center;
-    font-family: "Metropolis";
-    text-decoration: none;
-    display: inline-block;
-    font-size: 12px;
-    margin: 20px 50px;
-    cursor: pointer;
-    box-shadow: 0px 2px 5px #888888;
-  }
-
-  .navigation-buttons button:hover {
-    border: none;
-    color: #000;
-    background-color: #7EBB74;
-    padding: 10px 40px;
-    text-align: center;
-    font-family: "Metropolis";
-    text-decoration: none;
-    display: inline-block;
-    font-size: 12px;
-    margin: 20px 50px;
-    cursor: pointer;
-    box-shadow: 0px 5px 10px #888888;
+  .__details {
+    width: 50%;
+    height: 50vh;
+    padding: 50px 30px;
   }
 
   .container {
-    width: 450px;
+    width: 100%;
     margin: 50px auto;
   }
 
@@ -94,90 +35,181 @@
     margin-bottom: 10px;
   }
 
-  .container input[type="date"],
   .container input[type="time"] {
-    width: 30%;
+    width: 50%;
     padding: 8px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
 
-  .container input[type="submit"] {
-    margin-top: 10px;
-    background-color: #4CAF50;
-    color: #fff;
+  .navigation-buttons {
+    width: 50%;
+    padding: 0 auto;
+    margin: 0 auto;
+  }
+
+  .navigation-buttons button:hover {
     border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
+    color: #000;
+    background-color: #7EBB74;
+    font-family: "Metropolis";
     cursor: pointer;
+    box-shadow: 0px 5px 10px #888888;
+  }
+
+
+  .navigation-buttons>button:hover {
+    width: fit-content;
+    padding: 0 auto;
+    margin: 0 auto;
+  }
+
+  .navigation-buttons>button {
+    margin: 0 0;
+  }
+
+  .__date-summary,
+  .__checkout-summary,
+  .__inp {
+    padding: 10px 0px;
+  }
+
+  @media only screen and (max-width: 900px) {
+    .date-card {
+      display: flex;
+      flex-direction: column-reverse;
+      width: 80%;
+      height: 100%;
+    }
+  }
+
+  @media only screen and (max-width: 700px) {
+    .date-card {
+      display: flex;
+      flex-direction: column-reverse;
+      width: 90%;
+      height: 100%;
+    }
+
+    .date-card>* {
+      flex: 1;
+    }
+
+    .container input[type="time"] {
+      width: 80%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .__details {
+      width: 100%;
+      height: fit-content;
+      padding: 50px 0;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
   }
 </style>
 <section class="date-bg">
   <div class="date-card">
-    <div class="cap">
-      <span>DATE OF RESERVATION</span> <br>
-      <p>When do you plan to stay in our resort? </p>
+    <?php require("components/calendar.php") ?>
+    <div class="__details">
+      <div class="__title">
+        <span>DATE</span>
+      </div>
+
+      <div class="__subtitle">
+        <span>Select a date for the reservation!</span>
+      </div>
+
+      <div class="container">
+        <div class="__inp">
+          Check-in: <input type="time" id="time" name="time">
+          <input type="text" name="date" class="inp-date" value="" hidden>
+        </div>
+
+        <div class="__date-summary">
+          <span>Date: </span>
+          <span class="__date-span">PICK DATE</span>
+        </div>
+        <div class="__checkout-summary">
+          <span>Check-out: </span>
+          <span class="__checkout-span">NO TIME SELECTED</span>
+        </div>
+      </div>
     </div>
 
-    <div class="container">
-      Date: <input type="date" id="date" name="date">
-      <br><br>
-      Time: <input type="time" id="time" name="time">
-      <input type="text" name="current_page" value="summary" hidden>
 
-      <?php
-        $_SESSION["capacity"] = $_POST["capacity"];
-      ?>
-    </div>
-
-    <div class="navigation-buttons">
-      <button onclick="goBack()" class="option-button">BACK</button>
-      <button onclick="proceed()" class="option-button">PROCEED</button>
-    </div>
 
     <script>
-      let selectedOption = null;
+      setTimeout(() => {
+        let calendarEl = document.querySelector(".calendar-section");
+        let detailsEl = document.querySelector(".__details");
 
-      function selectOption(button) {
-        if (selectedOption) {
-          selectedOption.classList.remove("selected");
-        }
-
-        selectedOption = button;
-        selectedOption.classList.add("selected");
-      }
-
-      function goBack() {
-        // Logic for going back
-        console.log("Go back");
-        // Redirect to the previous page
-        window.location.href = "capacity.php";
-      }
-
-      function proceed() {
-        // Check if date and time fields are filled
-        const date = document.getElementById("date").value;
-        const time = document.getElementById("time").value;
-
-        if (date === "" || time === "") {
-          alert("Please fill in both the date and time fields.");
-          return;
-        }
-
-        // Store the selected date and time in sessionStorage
-        sessionStorage.setItem("selectedDate", date);
-        sessionStorage.setItem("selectedTime", time);
-
-        // Logic for proceeding
-        console.log("Proceed");
-        // Redirect to the next page
-      }
-
-      function validateForm() {
-        // Prevent form submission
-        return false;
-      }
+        detailsEl.setAttribute("height", getComputedStyle(calendarEl).height)
+      }, 500);
     </script>
+
   </div>
+
+  <div class="navigation-buttons">
+    <button type="button" onclick="changePage('home')" class="option-button">BACK</button>
+    <button type="button" onclick="changePage('capacity')" class="option-button">PROCEED</button>
+  </div>
+
+  <script>
+    const timeEl = document.querySelector(".__checkout-span");
+    const dateEl = document.querySelector(".__date-span");
+    const dateInputEl = document.querySelector(".inp-date");
+    const timeInputEl = document.getElementById("time");
+    let timeInputValue = "";
+    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    function calculateCheckOut() {
+      let timeParts = timeInputValue.split(/:|\s/);
+      let hours = parseInt(timeParts[0], 10);
+      let minutes = parseInt(timeParts[1], 10);
+
+      let date = !dateInputEl.value ? new Date() : new Date(dateInputEl.value);
+      date.setHours(hours);
+      date.setMinutes(minutes);
+
+      date.setHours(date.getHours() + 22);
+
+      let updatedHours = date.getHours();
+      let updatedMinutes = date.getMinutes();
+
+      let rawUpdatedHours = updatedHours;
+      let rawUpdatedMinutes = updatedMinutes;
+
+      let updatedAmPm = updatedHours >= 12 ? "PM" : "AM";
+
+      var month = monthNames[date.getMonth()];
+      var day = date.getDate();
+      var year = date.getFullYear();
+
+      var formattedDate = month + " " + day + ", " + year;
+
+      updatedHours = updatedHours % 12;
+      if (updatedHours === 0) {
+        updatedHours = 12;
+      }
+
+      dateInputEl.value = formattedDate + " " + String(rawUpdatedHours).padStart(2, "0") + ":" + String(rawUpdatedMinutes).padStart(2, "0");
+
+      timeEl.textContent = formattedDate + " - " + String(updatedHours).padStart(2, "0") + ":" + String(updatedMinutes).padStart(2, "0") + " " + updatedAmPm;
+    }
+
+    timeInputEl.oninput = function(e) {
+      timeInputValue = e.target.value;
+      calculateCheckOut();
+    }
+  </script>
+
+
 </section>

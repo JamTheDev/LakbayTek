@@ -1,3 +1,3 @@
 <?php
-require_once("backend/auth.php");
+require_once("controller/AuthController.php");
 logout();

@@ -12,8 +12,8 @@ if (isset($_POST["__user-email"]) && isset($_POST["__user-password"])) {
 
     $res = register($username, $email, $password, $confirm_password, $gender, $bday, $address);
 
-    if (!empty($res->$ERR_MSG)) {
-        header("Location: ../index.php?err={$res->$ERR_MSG}");
+    if (!empty($res->$ERR_CODE)) {
+        header("Location: ../login.php?err={$res->$ERR_CODE}");
     }
 
     header("Location: ../index.php");

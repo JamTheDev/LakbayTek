@@ -1,9 +1,17 @@
 <?php
+
+if (__FILE__ == $_SERVER['SCRIPT_FILENAME']) {
+    die("This file cannot be accessed directly.");
+}
+
 include("bootstrap.php");
 include("../bootstrap.php");
 
 include("utils/idgen.php");
 include("../utils/idgen.php");
+
+include("types/AuthTypes.php");
+include("../types/AuthTypes.php");
 
 
 function login(string $email, string $password, bool $_persist): User
@@ -18,17 +26,24 @@ function login(string $email, string $password, bool $_persist): User
             FROM Users
             WHERE email = ?;
         ");
-        $stmt->bind_param("s", $email);
-        $result = $stmt->get_result();
-        $assoc_result = $result->fetch_assoc();
 
-        if ($result->num_rows < 0) {
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
             $conn->rollback();
             return User::raise_error(AuthenticationErrors::NoAccount);
         }
 
-        if (password_verify(base64_encode(hash($password, true)), $assoc_result["password"])) {
+        $assoc_result = $result->fetch_assoc();
+        $stmt->free_result();
+
+        if (password_verify(base64_encode(hash("sha256", $password, true)), $assoc_result["password"])) {
             $conn->commit();
+            if ($_persist) {
+                create_secure_session($assoc_result["user_id"]);
+            }
             return User::from_assoc($assoc_result);
         }
 
@@ -37,25 +52,8 @@ function login(string $email, string $password, bool $_persist): User
         $conn->rollback();
         return User::raise_error("Error: {$e->getMessage()}");
     }
-
-    // then query it
-    $result = $conn->query("
-        SELECT *
-        FROM Users
-        WHERE email = '$email';
-    ");
-
-    $exec = $result->fetch_assoc();
-    if ($exec && $result->num_rows == 0) return 2;
-    if (password_verify(base64_encode(hash("sha256", $password, true)), $exec["password"])) {
-        if ($_persist) {
-            create_secure_session($exec["user_id"]);
-        }
-        return 1;
-    }
-
-    return 0;
 }
+
 
 function register(string $username, string $email, string $password, string $confirm_password, string $gender, mixed $bday, string $address): User
 {
@@ -80,6 +78,8 @@ function register(string $username, string $email, string $password, string $con
             return User::raise_error(AuthenticationErrors::PasswordsNotMatching);
         }
 
+        $stmt->close();
+
         $id = genid(16, 4);
         $hashed_password = password_hash(base64_encode(hash("sha256", $password, true)), PASSWORD_DEFAULT);
 
@@ -96,6 +96,7 @@ function register(string $username, string $email, string $password, string $con
         $stmt->bind_param("sssssss", $id, $username, $email, $gender, $bday, $address, $hashed_password);
         $stmt->execute();
 
+        $stmt->close();
         if ($stmt->affected_rows > 0) {
             $conn->commit();
             return User::from_assoc($stmt->get_result()->fetch_assoc());
@@ -125,10 +126,7 @@ function create_secure_session(string $user_id): bool
 
         $stmt = $conn->prepare("
             INSERT INTO user_tokens (selector, hashed_validator, user_id, expiry) VALUES (
-                '$selector',
-                '$hashed_validator',
-                '$user_id',
-                '{}'
+                ?, ?, ?, ?
             );
         ");
 
@@ -137,6 +135,7 @@ function create_secure_session(string $user_id): bool
 
         setcookie("rememberme", "$selector:$validator", time() + 60 * 60 * 24 * 30, '/');
         $conn->commit();
+        $stmt->close();
         return isset($_COOKIE["rememberme"]);
     } catch (Exception $e) {
         return false;
@@ -159,6 +158,7 @@ function getSessionDetails(): ?array
         $assoc_result = $result->fetch_assoc();
 
         $conn->commit();
+        $stmt->close();
         return $assoc_result;
     } catch (Exception $e) {
         $conn->rollback();
@@ -192,6 +192,7 @@ function findUserBySession(): User
             return User::raise_error(AuthenticationErrors::NoAccount);
         }
 
+        $stmt->close();
         $conn->commit();
         return User::from_assoc($assoc_result);
     } catch (Exception $e) {
@@ -205,17 +206,27 @@ function logout($redirect = "index.php")
 {
     global $conn;
 
-    $selector = fetchRememberMeToken()[0];
+    try {
+        $conn->begin_transaction();
+        $selector = fetchRememberMeToken()[0];
 
-    $exec = $conn->query(
-        "DELETE FROM user_tokens WHERE selector = '$selector'"
-    );
+        $stmt = $conn->prepare(
+            "DELETE FROM user_tokens WHERE selector = ?"
+        );
 
-    if ($exec && $_COOKIE["rememberme"]) {
-        $_COOKIE["rememberme"] = NULL;
+        $stmt->bind_param("s", $selector);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0 && $_COOKIE["rememberme"]) {
+            $_COOKIE["rememberme"] = NULL;
+        }
+
+        $conn->commit();
+        header("Location: $redirect");
+    } catch (Exception $e) {
+        header("Location: $redirect?err={$e->getMessage()}");
     }
-
-    header("Location: $redirect");
 }
 
 function fetchRememberMeToken(): ?array

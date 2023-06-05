@@ -7,6 +7,7 @@ session_start();
 
 require_once("controller/AuthController.php");
 require_once("enums/ErrorEnums.php");
+require_once("types/AuthTypes.php");
 ?>
 
 <head>

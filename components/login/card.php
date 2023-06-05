@@ -100,7 +100,7 @@
         <img src="assets/logos/cq_logo.png" alt="" class="__logo">
         <span class="__title-text">LOGIN</span>
 
-        <form action="backend/login.php" method="post">
+        <form action="api/login.php" method="post">
             <div class="__custom-input">
                 <i class="fa-solid fa-user"></i>
                 <input type="email" name="__user-email" placeholder="USER EMAIL">
@@ -121,11 +121,17 @@
                     <br>
                     <?php
                     switch (intval($_GET["err"])) {
-                        case AuthenticationErrors::NoAccount:
+                        case AuthenticationErrors::NoAccount->value:
                             echo "Account does not exist!";
                             break;
-                        case AuthenticationErrors::WrongPassword:
+                        case AuthenticationErrors::WrongPassword->value:
                             echo "Wrong password! Please try again.";
+                            break;
+                        case AuthenticationErrors::NoSessionID->value:
+                            echo "Please try logging in again.";
+                            break;
+                        case AuthenticationErrors::PasswordsNotMatching->value:
+                            echo "Passwords do not match!";
                             break;
                         default:
                             echo "Unknown Error, please try again!";
