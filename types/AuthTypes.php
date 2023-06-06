@@ -15,6 +15,7 @@ class User
     public mixed $gender;
     public mixed $date;
     public mixed $password;
+    public mixed $verified;
 
     public mixed $ERR_CODE = AuthenticationErrors::None;
 
@@ -26,6 +27,7 @@ class User
         mixed $gender = NULL,
         mixed $date = NULL,
         mixed $password = NULL,
+        mixed $verified = NULL,
         mixed $ERR_CODE = AuthenticationErrors::None
     ) {
         $this->user_id = $user_id;
@@ -35,6 +37,7 @@ class User
         $this->gender = $gender;
         $this->date = $date;
         $this->password = $password;
+        $this->verified = $verified;
         $this->ERR_CODE = $ERR_CODE;
     }
 
