@@ -1,5 +1,8 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 if (__FILE__ == $_SERVER['SCRIPT_FILENAME']) {
     die("This file cannot be accessed directly.");
 }
@@ -13,6 +16,13 @@ include("../utils/idgen.php");
 include("types/AuthTypes.php");
 include("../types/AuthTypes.php");
 
+include("PHPMailer/src/PHPMailer.php");
+include("PHPMailer/src/Exception.php");
+include("PHPMailer/src/SMTP.php");
+
+include("../PHPMailer/src/PHPMailer.php");
+include("../PHPMailer/src/Exception.php");
+include("../PHPMailer/src/SMTP.php");
 
 function login(string $email, string $password, bool $_persist): User
 {
@@ -80,26 +90,25 @@ function register(string $username, string $email, string $password, string $con
 
         $stmt->close();
 
-        $id = genid(16, 4);
+        $id = genid(16, 3);
         $hashed_password = password_hash(base64_encode(hash("sha256", $password, true)), PASSWORD_DEFAULT);
 
-        // Insert into database
+        $verified = 0;
+
         $stmt = $conn->prepare(
-            "
-            INSERT INTO Users 
-            (user_id, username, email, gender, birthdate, address, password) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO Users 
+            (user_id, username, email, gender, birthdate, address, password, verified) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         );
-        $stmt->bind_param("sssssss", $id, $username, $email, $gender, $bday, $address, $hashed_password);
+        $stmt->bind_param("sssssssi", $id, $username, $email, $gender, $bday, $address, $hashed_password, $verified);
         $stmt->execute();
 
-        $conn->commit();
-
-        if ($stmt->get_result()) {
-            return new User($id, $username, $email, $gender, $bday, $address, $hashed_password);
+        if ($stmt->affected_rows > 0) {
+            $conn->commit();
+            return new User($id, $username, $email, $gender, $bday, $address, $hashed_password, $verified);
         }
 
-        return User::raise_error("Ewan ko mhie");
+        return User::raise_error($stmt->get_result());
     } catch (mysqli_sql_exception $e) {
         $conn->rollback();
         return User::raise_error("Error: " . $e->getMessage());
@@ -198,7 +207,7 @@ function getSessionDetails(): ?array
     }
 }
 
-function findUserBySession(): User
+function getUserBySession(): User
 {
     global $conn;
     try {
@@ -299,6 +308,141 @@ function verifyRememberMeToken(): bool
         return false;
     } catch (Exception $e) {
         $conn->rollback();
+        // Handle and log the exception
+        return false;
+    }
+}
+
+function isVerificationCodeActive(string $user_id): bool
+{
+    try {
+        global $conn;
+
+        $currentDateTime = date('Y-m-d H:i:s');
+
+        $stmt = $conn->prepare("
+            SELECT *
+            FROM PasswordReset
+            WHERE user_id = ? AND expiration >= ?;
+        ");
+
+        $stmt->bind_param("ss", $user_id, $currentDateTime);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $stmt->close();
+
+        return $result->num_rows > 0;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+
+function verifyEmail(string $email, string $token): bool
+{
+    try {
+        global $conn;
+
+        $stmt = $conn->prepare("
+            SELECT user_id
+            FROM PasswordReset
+            WHERE reset_token = ? AND expiration >= ?;
+        ");
+
+        $expiration = date('Y-m-d H:i:s');
+        $stmt->bind_param("ss", $token, $expiration);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            $stmt->close();
+            return false;
+        }
+
+        $row = $result->fetch_assoc();
+        $user_id = $row['user_id'];
+
+        $stmt = $conn->prepare("
+            UPDATE Users
+            SET verified = 1
+            WHERE email = ?;
+        ");
+
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $affectedRows = $stmt->affected_rows;
+
+        $stmt = $conn->prepare("
+            DELETE FROM PasswordReset
+            WHERE user_id = ?;
+        ");
+
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+
+        $stmt->close();
+
+        return $affectedRows > 0;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+
+function generateVerificationToken(string $user_id): ?string
+{
+    try {
+        global $conn;
+
+        $token = generateToken();
+        $expiration = date('Y-m-d H:i:s', strtotime('+30 minutes')); // Token expires after 1 day
+
+        $stmt = $conn->prepare("
+            INSERT INTO PasswordReset (user_id, reset_token, expiration)
+            VALUES (?, ?, ?);
+        ");
+
+        $stmt->bind_param("sss", $user_id, $token, $expiration);
+        $stmt->execute();
+
+        $stmt->close();
+
+        return $token;
+    } catch (Exception $e) {
+        // Handle and log the exception
+        return null;
+    }
+}
+
+
+function sendVerificationEmail(string $email, string $token): bool
+{
+    $mail = new PHPMailer(true);
+
+    try {
+        // SMTP configuration
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'noreply.casaquerencia@gmail.com';
+        $mail->Password = 'xdglrnlicmrwqaht';
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port = 465;
+
+        // Sender and recipient
+        $mail->setFrom('noreply.casaquerencia@gmail.com', 'Casa Querencia');
+        $mail->addAddress($email);
+
+        // Email content
+        $mail->isHTML(true);
+        $mail->Subject = 'Email Verification';
+        $mail->Body = "Click the following link to verify your email: <a href=\"localhost/LakbayTek/verify_token.php?token=$token\">Verify Email</a>";
+
+        $mail->send();
+
+        return true;
+    } catch (Exception $e) {
         // Handle and log the exception
         return false;
     }

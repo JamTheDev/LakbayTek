@@ -3,7 +3,7 @@
 <?php require("config.php"); ?>
 <?php
 
-$user = findUserBySession();
+$user = getUserBySession();
 ?>
 
 <body>

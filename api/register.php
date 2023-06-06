@@ -10,13 +10,19 @@ if (isset($_POST["__user-email"]) && isset($_POST["__user-password"])) {
     $gender = $_POST["__user-gender"];
     $bday = $_POST["__user-bday"];
 
+
     $res = register($username, $email, $password, $confirm_password, $gender, $bday, $address);
 
-    if (!empty($res->$ERR_CODE)) {
-        header("Location: ../login.php?err={$res->$ERR_CODE}");
+    if ($res->ERR_CODE->value != AuthenticationErrors::None->value) {
+        $errorCode = $res->ERR_CODE;
+
+        if ($errorCode instanceof AuthenticationErrors) {
+            $errorCode = $errorCode->value;
+        }
+
+        header("Location: ../register.php?err={$errorCode}");
         return;
     }
 
-    header("Location: ../index.php");
-
+    header("Location: ../index.php?id={$res->user_id}");
 }

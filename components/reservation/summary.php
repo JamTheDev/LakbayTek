@@ -187,7 +187,7 @@ $reservation_id = genid(9, 4);
                         body: JSON.stringify({
                             "reservation_id": "<?php echo  $reservation_id ?>",
                             "package_id": "<?php echo $_SESSION['capacity']; ?>",
-                            "user_id": "<?php echo finduserbysession()["user_id"]; ?>",
+                            "user_id": "<?php echo getUserBySession()["user_id"]; ?>",
                             "date": "<?php echo $_POST["date"]; ?>",
                             "time": "<?php echo $_POST["time"]; ?>",
                             "payment_status": "UNPAID",

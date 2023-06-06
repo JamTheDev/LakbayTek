@@ -47,7 +47,7 @@ class User
 
     public static function raise_error(mixed $err): User
     {
-        return new self(NULL, NULL, NULL, NULL, NULL, NULL, NULL, $err);
+        return new self(NULL, NULL, NULL, NULL, NULL, NULL, NULL,  NULL, $err);
     }
 
     public static function from_assoc(mixed $_obj): User

@@ -1,6 +1,5 @@
 <?php
 
-error_reporting(0);
 define('BASE_PATH', dirname(__FILE__));
 session_set_cookie_params(0);
 session_start();
