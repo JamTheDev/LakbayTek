@@ -14,6 +14,7 @@ if (isset($_POST["__user-email"]) && isset($_POST["__user-password"])) {
 
     if (!empty($res->$ERR_CODE)) {
         header("Location: ../login.php?err={$res->$ERR_CODE}");
+        return;
     }
 
     header("Location: ../index.php");

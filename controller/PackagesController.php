@@ -35,6 +35,7 @@ function get_all_packages(): array
         return $pkg_arr;
     } catch (Exception $e) {
         $conn->rollback();
+        error_log($e->getMessage());
         return [Package::raise_error("Error: {$e->getMessage()}")];
     }
 }

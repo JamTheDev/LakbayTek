@@ -3,7 +3,7 @@
 <?php require("config.php"); ?>
 <?php
 
-$user = finduserbysession();
+$user = findUserBySession();
 ?>
 
 <body>
@@ -36,7 +36,7 @@ $user = finduserbysession();
 
             <tr>
                 <td><strong>Email</strong></td>
-                <td><?= $user["email"] ?></td>
+                <td><?= $user->email ?></td>
             </tr>
 
             <tr>
@@ -48,9 +48,9 @@ $user = finduserbysession();
 
             <tr>
                 <td><strong>Name</strong></td>
-                <td><?= $user["username"] ?></td>
+                <td><?= $user->username ?></td>
                 <td><strong>Birthdate</strong></td>
-                <td><?= $user["birthdate"] ?></td>
+                <td><?= $user->date ?></td>
             </tr>
 
             <tr>
@@ -62,9 +62,9 @@ $user = finduserbysession();
 
             <tr>
                 <td><strong>Gender</strong></td>
-                <td><?= $user["gender"] ?></td>
+                <td><?= $user->gender ?></td>
                 <td><strong>Address</strong></td>
-                <td><?= $user["address"] ?></td>
+                <td><?= $user->address ?></td>
             </tr>
 
 

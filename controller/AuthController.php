@@ -86,29 +86,60 @@ function register(string $username, string $email, string $password, string $con
         // Insert into database
         $stmt = $conn->prepare(
             "
-            WITH inserted_user AS (
             INSERT INTO Users 
             (user_id, username, email, gender, birthdate, address, password) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            RETURNING *
-            ) SELECT * FROM inserted_user LIMIT 1"
+            VALUES (?, ?, ?, ?, ?, ?, ?)"
         );
         $stmt->bind_param("sssssss", $id, $username, $email, $gender, $bday, $address, $hashed_password);
         $stmt->execute();
 
-        $stmt->close();
-        if ($stmt->affected_rows > 0) {
-            $conn->commit();
-            return User::from_assoc($stmt->get_result()->fetch_assoc());
-        } else {
-            $conn->rollback();
-            return User::raise_error("Failed to insert user!");
+        $conn->commit();
+
+        if ($stmt->get_result()) {
+            return new User($id, $username, $email, $gender, $bday, $address, $hashed_password);
         }
+
+        return User::raise_error("Ewan ko mhie");
     } catch (mysqli_sql_exception $e) {
         $conn->rollback();
         return User::raise_error("Error: " . $e->getMessage());
     }
 }
+
+function updateProfile(User $user, string $newUsername, string $newEmail, string $newAddress): bool
+{
+    global $conn;
+
+    try {
+        $conn->begin_transaction();
+
+        // Check if the new email is already associated with another account
+        $stmt = $conn->prepare("SELECT * FROM Users WHERE email = ? AND user_id <> ?");
+        $stmt->bind_param("ss", $newEmail, $user->user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $conn->rollback();
+            return false; // Return false indicating the email is already in use
+        }
+
+        $stmt->close();
+
+        // Update the user's profile
+        $stmt = $conn->prepare("UPDATE Users SET username = ?, email = ?, address = ? WHERE user_id = ?");
+        $stmt->bind_param("ssss", $newUsername, $newEmail, $newAddress, $user->user_id);
+        $stmt->execute();
+
+        $conn->commit();
+
+        return true; // Return true indicating the profile update was successful
+    } catch (mysqli_sql_exception $e) {
+        $conn->rollback();
+        return false; // Return false if an error occurred during the profile update
+    }
+}
+
 
 
 function create_secure_session(string $user_id): bool
@@ -169,8 +200,8 @@ function getSessionDetails(): ?array
 
 function findUserBySession(): User
 {
+    global $conn;
     try {
-        global $conn;
         $conn->begin_transaction();
 
         $session_details = getSessionDetails();
@@ -185,7 +216,7 @@ function findUserBySession(): User
         $stmt->execute();
 
         $result = $stmt->get_result();
-        $assoc_result = $result->fetch_assoc();
+        $assoc_result = $result->fetch_all(MYSQLI_ASSOC)[0];
 
         if ($result->num_rows <= 0) {
             $conn->rollback();

@@ -28,13 +28,13 @@ class User
         mixed $password = NULL,
         mixed $ERR_CODE = AuthenticationErrors::None
     ) {
-        $this->$user_id = $user_id;
-        $this->$username = $username;
-        $this->$email = $email;
-        $this->$address = $address;
-        $this->$gender = $gender;
-        $this->$date = $date;
-        $this->$password = $password;
+        $this->user_id = $user_id;
+        $this->username = $username;
+        $this->email = $email;
+        $this->address = $address;
+        $this->gender = $gender;
+        $this->date = $date;
+        $this->password = $password;
         $this->ERR_CODE = $ERR_CODE;
     }
 
@@ -49,14 +49,14 @@ class User
 
     public static function from_assoc(mixed $_obj): User
     {
-        return new User(
+        return new self(
             $_obj["user_id"],
             $_obj["username"],
             $_obj["email"],
             $_obj["address"],
             $_obj["gender"],
-            $_obj["date"],
-            $_obj["password"],
+            $_obj["birthdate"],
+            $_obj["password"]
         );
     }
 }

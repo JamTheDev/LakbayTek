@@ -43,3 +43,5 @@ require_once("types/AuthTypes.php");
         }
     </style>
 </head>
+
+<?php require("components/notif_banner.php") ?>

@@ -30,8 +30,7 @@
                             <a href="logout.php">Sign out</a>
                         <?php else : ?>
                             <a href="#" class="" />
-                            <a href="#" class="" />
-
+                            <a href="register.php">Register</a>
                             <a href="login.php">Log In</a>
                         <?php endif; ?>
             </div>
