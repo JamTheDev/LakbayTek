@@ -61,8 +61,7 @@
 
   .navigation-buttons>button:hover {
     width: fit-content;
-    padding: 0 auto;
-    margin: 0 auto;
+   
   }
 
   .navigation-buttons>button {
@@ -159,7 +158,7 @@
 
   <div class="navigation-buttons">
     <button type="button" onclick="changePage('home')" class="option-button">BACK</button>
-    <button type="button" onclick="changePage('capacity')" class="option-button">PROCEED</button>
+    <button type="button" onclick="changePage('summary')" class="option-button">PROCEED</button>
   </div>
 
   <script>
