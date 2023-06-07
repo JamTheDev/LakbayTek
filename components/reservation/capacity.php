@@ -66,15 +66,16 @@
       <button type="button" onclick="changePage('date')" class="option-button">PROCEED</button>
     </div>
   </div>
-  <input type="number" name="package_id" value="" hidden>
+  <input type="text" name="package_id" class="__package-id" value="" hidden>
   <script>
     let data;
-    let insertContentEl;
+    let insertContentEl, packageIdInput;
     let xhttp = new XMLHttpRequest();
 
     // man tinatamad nako ioptimize to fuck this
     setTimeout(() => {
       insertContentEl = document.querySelector(".__insert-content");
+      packageIdInput = document.querySelector(".__package-id");
       load();
     }, 1000);
 
@@ -100,6 +101,11 @@
     document.querySelector(".capacity").oninput = (e) => {
       const inp = parseInt(e.target.value);
       const x = (data.filter((v, i) => parseInt(v["max_capacity"]) >= inp && parseInt(v["min_capacity"]) <= inp))[0];
+      packageIdInput.value = x["package_id"];
+      console.log(x["package_id"]);
+      saveToCookie({
+        "package_id": x["package_id"]
+      })
       xhttp.open("GET", `components/reservation/package_card.php?package_name=${x["package_name"]}&package_desc=${encodeURIComponent(x["description"])}&weekday_price=${x["price_weekday"]}&&weekend_price=${x["price_weekend"]}`, true)
       xhttp.send();
     }

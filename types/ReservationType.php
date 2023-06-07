@@ -2,33 +2,37 @@
 if (__FILE__ == $_SERVER['SCRIPT_FILENAME']) {
     die("This file cannot be accessed directly.");
 }
+
+include "enums/Statuses.php";
+include "../enums/Statuses.php";
+
 class Reservation
 {
-    public string $reservation_id;
-    public string $package_id;
-    public string $user_id;
-    public ReservationStatus $reservation_status;
-    public PaymentStatus $payment_status;
-    public DateTime $check_in_date;
-    public DateTime $check_out_date;
+    public mixed $reservation_id;
+    public mixed $package_id;
+    public mixed $user_id;
+    public mixed $reservation_status;
+    public mixed $payment_status;
+    public mixed $check_in_date;
+    public mixed $check_out_date;
 
-    public string $ERR_CODE;
+    public mixed $ERR_CODE;
 
     public function __construct(
         mixed $reservation_id = NULL,
         mixed $package_id  = NULL,
         mixed $user_id = NULL,
-        mixed $reservation_status  = NULL,
-        mixed $payment_status = NULL,
-        DateTime $check_in_date,
-        DateTime $check_out_date,
-        mixed $ERR_CODE
+        mixed $reservation_status  = 0,
+        mixed $payment_status = 0,
+        mixed $check_in_date = NULL,
+        mixed $check_out_date = NULL,
+        mixed $ERR_CODE  = NULL
     ) {
         $this->reservation_id = $reservation_id;
         $this->package_id = $package_id;
         $this->user_id = $user_id;
-        $this->reservation_status = ReservationStatus::from($reservation_status);
-        $this->payment_status = PaymentStatus::from($payment_status);
+        $this->reservation_status = 0;
+        $this->payment_status = 0;
         $this->ERR_CODE = $ERR_CODE;
         $this->check_in_date = $check_in_date;
         $this->check_out_date = $check_out_date;
@@ -45,14 +49,14 @@ class Reservation
     public static function create_empty()
     {
         return new Reservation(
-            "",
-            "",
-            "",
-            "",
-            "",
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            NULL,
             new DateTime(),
             new DateTime(),
-            ""
+            NULL
         );
     }
 
@@ -91,12 +95,6 @@ class Reservation
         ];
     }
 
-
-    public static function is_empty(Reservation $_x)
-    {
-        return $_x->user_id == "" || $_x->reservation_id == "" || $_x->package_id == "" ||
-            $_x->reservation_status == "" || $_x->payment_status == "";
-    }
 
     public static function raise_error(string $err)
     {

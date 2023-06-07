@@ -5,19 +5,41 @@ include("bootstrap.php");
 include("../bootstrap.php");
 include("utils/idgen.php");
 include("../utils/idgen.php");
+include("../types/ReservationType.php");
 
 $entityBody = json_decode(file_get_contents('php://input'), true);
+$reservation_details = Reservation::from_assoc($entityBody);
 
-var_dump($entityBody);
+// Begin transaction
+$conn->begin_transaction();
 
-$reservation_id = $entityBody["reservation_id"];
-$package_id = $entityBody["package_id"];
-$user_id = $entityBody["user_id"];
-$date = $entityBody["date"];
-$time = $entityBody["time"];
-$dt = $date . " " . $time;
-$payment_status = $entityBody["payment_status"];
+try {
+    // Insert reservation details
+    $stmt = $conn->prepare("INSERT INTO Reservations (reservation_id, package_id, user_id, check_in_date, check_out_date) 
+        VALUES (?, ?, ?, ?, ?);");
 
+    $stmt->bind_param(
+        "sssss",
+        $reservation_details->reservation_id,
+        $reservation_details->package_id,
+        $reservation_details->user_id,
+        (new DateTime($reservation_details->check_in_date))->format("Y-m-d H:i:s"),
+        (new DateTime($reservation_details->check_out_date))->format("Y-m-d H:i:s")
+    );
 
-$result = $conn->query("insert into Reservations (reservation_id, package_id, user_id, date, payment_status) 
-VALUES ('$reservation_id', '$package_id', '$user_id', '$dt', '$payment_status');");
+    $stmt->execute();
+
+    if ($stmt->affected_rows > 0) {
+        // Commit the transaction
+        $conn->commit();
+        echo "Success!";
+        session_unset();
+        exit;
+    }
+
+    throw new Exception("Failed to insert reservation details");
+} catch (Exception $e) {
+    // Rollback the transaction
+    $conn->rollback();
+    echo "Fail!";
+}

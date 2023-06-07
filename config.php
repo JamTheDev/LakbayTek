@@ -4,8 +4,15 @@ define('BASE_PATH', dirname(__FILE__));
 session_set_cookie_params(0);
 session_start();
 
+include("bootstrap.php");
+include("utils/idgen.php");
+include("types/AuthTypes.php");
+include("types/ReservationType.php");
+
 require_once("controller/AuthController.php");
+require_once("controller/ReservationController.php");
 require_once("enums/ErrorEnums.php");
+require_once("enums/Statuses.php");
 require_once("types/AuthTypes.php");
 
 $user = getUserBySession();

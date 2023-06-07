@@ -1,4 +1,16 @@
 <?php
+include("bootstrap.php");
+include("../bootstrap.php");
+
+include("utils/idgen.php");
+include("../utils/idgen.php");
+
+include("types/AuthTypes.php");
+include("../types/AuthTypes.php");
+
+include("types/ReservationType.php");
+include("../types/ReservationType.php");
+
 header("Content-Type: application/json");
 
 include("../controller/ReservationController.php");

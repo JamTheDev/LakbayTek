@@ -1,8 +1,8 @@
 <?php
 
-$res = $conn->query("select * from Packages where package_id = '{$_SESSION['capacity']}'");
+$res = $conn->query("select * from Packages where package_id = '{$_SESSION['package_id']}'");
 $d = $res->fetch_assoc();
-$reservation_id = genid(9, 4);
+$reservation_id = genid(9);
 ?>
 <style>
     body {
@@ -22,8 +22,7 @@ $reservation_id = genid(9, 4);
         position: relative;
         flex: 1;
         line-height: 30px;
-        width: 490px;
-        margin: 60px auto;
+        margin: 30px 0;
         padding: 50px 40px 20px 40px;
         border-radius: 10px;
         background-color: #ffffffff;
@@ -145,8 +144,13 @@ $reservation_id = genid(9, 4);
             </div>
 
             <div class="__fields">
-                <span class="__field-name">Date and Time of Usage:</span>
-                <span class="__field-value"><?php echo (date('F j, Y', strtotime($_POST["date"]))) . " - " . $_POST["time"]; ?></span>
+                <span class="__field-name">Check in:</span>
+                <span class="__field-value"><?php echo $_SESSION["check_in_date"] ?></span>
+            </div>
+
+            <div class="__fields">
+                <span class="__field-name">Check out:</span>
+                <span class="__field-value"><?php echo $_SESSION["check_out_date"] ?></span>
             </div>
             <h2>Pricing & Payment</h2>
             <div class="__fields">
@@ -163,17 +167,20 @@ $reservation_id = genid(9, 4);
                 <span class="__field-value"> PHP <?php
                                                     $ts = strtotime($_POST["date"]);
                                                     $dayOfWeek = date('N', $ts);
+                                                    $d1 = new DateTime($_SESSION["check_in_date"]);
+                                                    $d2 = new DateTime($_SESSION["check_out_date"]);
+                                                    $interval = $d1->diff($d2);
                                                     $isWeekend = ($dayOfWeek == 6 || $dayOfWeek == 7);
 
 
-                                                    echo ($isWeekend ? $d["price_weekend"] : $d["price_weekend"])  / 2;
-                                                    ?> (50% OFF, see <a href=""> WHY<a />) </span>
+                                                    echo (($isWeekend ? $d["price_weekend"] : $d["price_weekend"]) * ($interval->days + 1))  / 2;
+                                                    ?> (50% OFF, pay other 50% ON-SITE) </span>
             </div>
         </div>
 
 
         <div class="__button-row">
-            <button type="button" class="__back" onclick="(e) => {e.preventDefault()}">Back</button>
+            <button type="button" class="__back" onclick="changePage('date')">Back</button>
             <button type="button" class="__pay-later" onclick="insertIntoDb()">Pay later</button>
             <button type="button" class="__pay-now">Pay Now</button>
         </div>
@@ -185,11 +192,11 @@ $reservation_id = genid(9, 4);
                     const response = await fetch("./api/insert_reservation.php", {
                         method: "POST",
                         body: JSON.stringify({
-                            "reservation_id": "<?php echo  $reservation_id ?>",
-                            "package_id": "<?php echo $_SESSION['capacity']; ?>",
-                            "user_id": "<?php echo getUserBySession()["user_id"]; ?>",
-                            "date": "<?php echo $_POST["date"]; ?>",
-                            "time": "<?php echo $_POST["time"]; ?>",
+                            "reservation_id": "<?php echo $reservation_id ?>",
+                            "package_id": "<?php echo $_SESSION['package_id']; ?>",
+                            "user_id": "<?php echo getUserBySession()->user_id; ?>",
+                            "check_in_date": "<?php echo $_SESSION["check_in_date"]; ?>",
+                            "check_out_date": "<?php echo $_SESSION["check_out_date"]; ?>",
                             "payment_status": "UNPAID",
                         })
                     })

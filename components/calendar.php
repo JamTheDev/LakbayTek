@@ -192,6 +192,8 @@
           // Check availability status for the current date
           var availabilityStatus = getAvailabilityStatus(currentDate);
 
+
+
           if (availabilityStatus === 'available') {
             cell.classList.add('available');
           } else if (availabilityStatus === 'booked') {
@@ -204,44 +206,89 @@
             }
           }
 
-          // when cell is clicked...
-          (function(cell) {
-            cell.onclick = function() {
-              if (cell.classList.contains("booked")) return;
-              selectedDate = currdate;
-              let isoDate = currentDate.toISOString();
-
-              if (cell == activeTdEl) {
-                activeTdEl.style.backgroundColor = "transparent";
-                activeTdEl = null;
-                dateHolderEl.textContent = "PICK DATE";
-                document.dispatchEvent(createCustomEvent(null)); // Dispatch event with null detail
-                return;
-              }
-
-              if (!activeTdEl) {
-                activeTdEl = cell;
+          if (dateSelectionMode == "co") {
+            if (_checkOutDate > currentDate) {
+              cell.style.backgroundColor = "gray";
+              if (_checkOutDate == currentDate) {
                 cell.style.backgroundColor = "orange";
-                document.dispatchEvent(createCustomEvent(isoDate)); // Dispatch event with selectedDate
-                return;
               }
+            } else {
+              (function(cell) {
+                cell.onclick = function() {
+                  if (cell.classList.contains("booked")) return;
+                  selectedDate = currdate;
 
-              activeTdEl.style.backgroundColor = "transparent";
-              cell.style.backgroundColor = "orange";
-              activeTdEl = cell;
-              document.dispatchEvent(createCustomEvent(isoDate)); // Dispatch event with selectedDate
-            };
+                  if (cell == activeTdEl) {
+                    activeTdEl.style.backgroundColor = "transparent";
+                    activeTdEl = null;
+                    dateHolderEl.textContent = "PICK DATE";
+                    document.dispatchEvent(createCustomEvent(null));
+                    return;
+                  }
 
-            // Function to create the custom event with the given selectedDate
-            function createCustomEvent(selectedDate = null, time = null) {
-              return new CustomEvent('ondateselect', {
-                detail: {
-                  selectedDate: selectedDate,
-                  time: time
+                  if (!activeTdEl) {
+                    activeTdEl = cell;
+                    cell.style.backgroundColor = "orange";
+                    document.dispatchEvent(createCustomEvent(className));
+                    return;
+                  }
+
+                  activeTdEl.style.backgroundColor = "transparent";
+                  cell.style.backgroundColor = "orange";
+                  activeTdEl = cell;
+                  document.dispatchEvent(createCustomEvent(className));
+                };
+
+                // Function to create the custom event with the given selectedDate
+                function createCustomEvent(_selectedDate = null, time = null) {
+                  return new CustomEvent('ondateselect', {
+                    detail: {
+                      selectedDate: _selectedDate,
+                      time: time
+                    }
+                  });
                 }
-              });
+              })(cell);
             }
-          })(cell);
+          } else {
+            (function(cell) {
+              cell.onclick = function() {
+                if (cell.classList.contains("booked")) return;
+                selectedDate = currdate;
+
+                if (cell == activeTdEl) {
+                  activeTdEl.style.backgroundColor = "transparent";
+                  activeTdEl = null;
+                  dateHolderEl.textContent = "PICK DATE";
+                  document.dispatchEvent(createCustomEvent(null));
+                  return;
+                }
+
+                if (!activeTdEl) {
+                  activeTdEl = cell;
+                  cell.style.backgroundColor = "orange";
+                  document.dispatchEvent(createCustomEvent(className));
+                  return;
+                }
+
+                activeTdEl.style.backgroundColor = "transparent";
+                cell.style.backgroundColor = "orange";
+                activeTdEl = cell;
+                document.dispatchEvent(createCustomEvent(className));
+              };
+
+              // Function to create the custom event with the given selectedDate
+              function createCustomEvent(_selectedDate = null, time = null) {
+                return new CustomEvent('ondateselect', {
+                  detail: {
+                    selectedDate: _selectedDate,
+                    time: time
+                  }
+                });
+              }
+            })(cell);
+          }
+
 
           row.appendChild(cell);
           currentDate.setDate(currentDate.getDate() + 1);

@@ -7,15 +7,6 @@ if (__FILE__ == $_SERVER['SCRIPT_FILENAME']) {
     die("This file cannot be accessed directly.");
 }
 
-include("bootstrap.php");
-include("../bootstrap.php");
-
-include("utils/idgen.php");
-include("../utils/idgen.php");
-
-include("types/AuthTypes.php");
-include("../types/AuthTypes.php");
-
 include("PHPMailer/src/PHPMailer.php");
 include("PHPMailer/src/Exception.php");
 include("PHPMailer/src/SMTP.php");

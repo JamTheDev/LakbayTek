@@ -2,40 +2,52 @@
 if (__FILE__ == $_SERVER['SCRIPT_FILENAME']) {
     die("This file cannot be accessed directly.");
 }
-include("bootstrap.php");
-include("../bootstrap.php");
 
-include("utils/idgen.php");
-include("../utils/idgen.php");
-
-include("types/AuthTypes.php");
-include("../types/AuthTypes.php");
-
-include("types/ReservationType.php");
-include("../types/ReservationType.php");
 
 /**
  * Stars / Restarts the current reservation process.
  */
 function start_reservation_process()
 {
-    if ($_COOKIE["ReservationProcess"]) {
-        setcookie("ReservationProcess", NULL);
+    if (!isset($_COOKIE["ReservationProcess"])) {
+        $expirationTime = time() + (24 * 60 * 60); // One day from the current time
+        $defaultValue = "default_value"; // Provide a default value for the cookie
+
+        $_SESSION['ReservationProcess'] = $defaultValue;
     }
 }
 
+
 function update_local_reservation(Reservation $_r): Reservation
 {
-    $old_reservation = fetch_local_reservation();
-    if (Reservation::is_empty($old_reservation)) return Reservation::raise_error("No reservation currently in place!");
+    if (!($_r instanceof Reservation)) {
+        return Reservation::raise_error("Invalid reservation data provided!");
+    }
 
+    $old_reservation = fetch_local_reservation();
     $assoc_new_reservation = $old_reservation->update_reservation($_r);
 
-    $str_assoc = json_encode($assoc_new_reservation);
-    setcookie("ReservationProcess", $str_assoc);
+    try {
+        $str_assoc = json_encode($assoc_new_reservation);
+        if ($str_assoc === false) {
+            return Reservation::raise_error("Failed to encode reservation data!");
+        }
+    } catch (Exception $e) {
+        return Reservation::raise_error("Failed to encode reservation data: " . $e->getMessage());
+    }
 
+    // Specify the same domain and path for the cookie
+    $domain = "localhost";
+    $path = "/";
+
+    // Set the expiration time for the cookie (e.g., 1 day from the current time)
+    $expirationTime = time() + (24 * 60 * 60);
+
+    $_SESSION['ReservationProcess'] = $str_assoc;
     return Reservation::from_assoc($assoc_new_reservation);
 }
+
+
 
 function fetch_local_reservation(): Reservation
 {

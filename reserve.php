@@ -2,7 +2,7 @@
 <html lang="en">
 <?php
 require_once("config.php");
-
+start_reservation_process();
 ?>
 
 <body>
@@ -82,32 +82,42 @@ require_once("config.php");
     <?php require("components/navbar.php"); ?>
 
     <?php if (verifyRememberMeToken()) : ?>
+
         <form class="main-form" action="" method="post">
             <?php
             $redir_page = $_POST['current_page'] ?? "welcome";
             require("components/reservation/$redir_page.php"); ?>
             <input type="text" class="current_page" name="current_page" value="welcome" hidden>
         </form>
+
+        <script>
+            let form;
+            window.onload = () => {
+                form = document.querySelector(".main-form");
+            }
+
+            function changePage(page) {
+                if (!form) return;
+                if (page == "home") {
+                    window.location.href = "index.php";
+                    return;
+                }
+                document.querySelector(".current_page").value = page;
+                form.submit();
+            }
+
+            function saveToCookie(data) {
+                fetch('./api/local_save_reservation.php', {
+                    method: "POST",
+                    header: "Content-Type: application/json",
+                    body: JSON.stringify(data)
+                }).then((r) => console.log(r.statusText));
+            }
+        </script>
     <?php endif; ?>
 
-    <script>
-        let form;
-        window.onload = () => {
-            form = document.querySelector(".main-form");
-        }
 
-        function changePage(page) {
-            if (!form) return;
-            if (page == "home") {
-                window.location.href = "index.php";
-                return;
-            }
-            document.querySelector(".current_page").value = page;
-            form.submit();
-        }
-    </script>
+
 </body>
 
 </html>
-
-<?php ?>

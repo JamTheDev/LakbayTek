@@ -1,18 +1,6 @@
 <?php
 
 
-include("bootstrap.php");
-include("../bootstrap.php");
-
-include("utils/idgen.php");
-include("../utils/idgen.php");
-
-include("types/AuthTypes.php");
-include("../types/AuthTypes.php");
-
-include("types/PackageType.php");
-include("../types/PackageType.php");
-
 
 function get_all_packages(): array
 {

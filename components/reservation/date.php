@@ -172,7 +172,7 @@
       </div>
 
       <div class="__curr-sel">
-        <span>SELECTING CHECK-IN DATE</span>
+        <span class="__curr-sel-span">SELECTING CHECK-IN DATE</span>
       </div>
 
       <div class="container">
@@ -183,7 +183,7 @@
         </div>
 
         <div class="__inp">
-          Time: <input type="time" id="time" name="time">
+          Time: <input type="time" id="ci-time" name="time">
           <input type="text" name="date" class="__ci-inp-date" value="" hidden>
         </div>
 
@@ -195,14 +195,14 @@
         </div>
 
         <div class="__inp">
-          Time: <input type="time" id="time" name="time" disabled>
+          Time: <input type="time" id="co-time" name="time" disabled>
           <input type="text" name="date" class="__co-inp-date" value="" hidden>
         </div>
 
 
         <div class="__buttons">
-          <button type="button">SET CHECK IN</button>
-          <button type="button">SET CHECK OUT</button>
+          <button class="set-ci" type="button">SET CHECK IN</button>
+          <button class="set-co" type="button">SET CHECK OUT</button>
         </div>
       </div>
     </div>
@@ -221,40 +221,75 @@
   </div>
 
   <div class="navigation-buttons">
-    <button type="button" onclick="changePage('home')" class="option-button">BACK</button>
+    <button type="button" onclick="changePage('capacity')" class="option-button">BACK</button>
     <button type="button" onclick="changePage('summary')" class="option-button">PROCEED</button>
   </div>
 
   <script>
     // find elements for check-in & check-out dates/time
     let dateSelectionMode = "ci";
-    let _selectedDate, timeInputValue;
+    let _selectedDate, timeInputValue, _checkInDate, _checkOutDate;
     const checkInDateSpan = document.querySelector(".__ci-date-span");
     const checkOutDateSpan = document.querySelector(".__co-date-span");
+    const selectMode = document.querySelector(".__curr-sel>span");
+    const checkOutInput = document.getElementById("co-time");
+    const setCheckInBtn = document.querySelector(".set-ci");
+    const setCheckOutBtn = document.querySelector(".set-co");
+
+    setCheckInBtn.onclick = function() {
+      dateSelectionMode = "ci";
+      _checkInDate = new Date(_selectedDate);
+      showMonth(currentDate);
+      selectMode.textContent = "SELECTING CHECK-IN DATE";
+
+    }
+    setCheckOutBtn.onclick = function() {
+      dateSelectionMode = "co";
+      _checkOutDate = new Date(_selectedDate);
+      showMonth(currentDate);
+      selectMode.textContent = "SELECTING CHECK-OUT DATE";
+    }
 
     document.addEventListener('ondateselect', (date, time) => {
-      _selectedDate = date ?? _selectedDate;
-      console.log(_selectedDate)
+      if (date == null) return;
+      _selectedDate = date.detail.selectedDate ?? _selectedDate;
+      console.log(_selectedDate);
       let [onlyTime, dateAndTime] = calculateCheckOut(new Date(_selectedDate));
       // check-in
       if (dateSelectionMode == "ci") {
-        checkInDateSpan.textContent = dateAndTime;
+        var _date = new Date(_selectedDate);
+        var month = getMonthName(_date.getMonth());
+        var day = _date.getDate();
+        var year = _date.getFullYear();
+
+        var formattedDate = month + " " + day + ", " + year;
+        checkInDateSpan.textContent = formattedDate;
+        checkOutDateSpan.textContent = dateAndTime;
+
+        saveToCookie({
+          "check_in_date": formattedDate + " " + (timeInputValue ?? "00:00"),
+          "check_out_date": dateAndTime + " " + "00:00",
+        })
+
+        checkOutInput.value = onlyTime;
       }
 
       // check-out
       if (dateSelectionMode == "co") {
-
+        checkOutDateSpan.textContent = dateAndTime;
       }
+
+
 
     });
 
     const dateInputEl = document.querySelector(".inp-date");
-    const timeInputEl = document.getElementById("time");
+    const timeInputEl = document.getElementById("ci-time");
     var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     function calculateCheckOut(date) {
       let timeParts, hours, minutes;
-      if (timeInputValue == null) {
+      if (timeInputValue != null) {
         timeParts = timeInputValue.split(/:|\s/);
         hours = parseInt(timeParts[0], 10);
         minutes = parseInt(timeParts[1], 10);
@@ -273,7 +308,7 @@
 
       let updatedAmPm = updatedHours >= 12 ? "PM" : "AM";
 
-      var month = monthNames[date.getMonth()];
+      var month = getMonthName(date.getMonth());
       var day = date.getDate();
       var year = date.getFullYear();
 
@@ -284,16 +319,56 @@
         updatedHours = 12;
       }
 
-      console.log(formattedDate + " " + String(rawUpdatedHours).padStart(2, "0") + ":" + String(rawUpdatedMinutes).padStart(2, "0"))
-
-      return [String(updatedHours).padStart(2, "0") + ":" + String(updatedMinutes).padStart(2, "0") + " " + updatedAmPm, formattedDate + " " + String(rawUpdatedHours).padStart(2, "0") + ":" + String(rawUpdatedMinutes).padStart(2, "0")];
+      return [
+        String(rawUpdatedHours).padStart(2, "0") +
+        ":" +
+        String(rawUpdatedMinutes).padStart(2, "0"),
+        formattedDate
+      ];
     }
+
+    function getMonthName(monthIndex) {
+      var monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
+      return monthNames[monthIndex];
+    }
+
 
     timeInputEl.oninput = function(e) {
       timeInputValue = e.target.value;
-      calculateCheckOut();
+      console.log(timeInputValue)
+      calculateCheckOut(new Date(_selectedDate));
+      let [onlyTime, dateAndTime] = calculateCheckOut(new Date(_selectedDate));
+
+      var _date = new Date(_selectedDate);
+      var month = getMonthName(_date.getMonth());
+      var day = _date.getDate();
+      var year = _date.getFullYear();
+
+      var formattedDate = month + " " + day + ", " + year;
+      checkInDateSpan.textContent = formattedDate;
+      checkOutDateSpan.textContent = dateAndTime;
+      checkOutInput.value = onlyTime;
+
+      saveToCookie({
+        "check_in_date": formattedDate + " " + (timeInputValue ?? "00:00"),
+        "check_out_date": dateAndTime + " " + (onlyTime ?? "00:00"),
+      })
     }
   </script>
 
 
 </section>
+
