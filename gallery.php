@@ -28,7 +28,7 @@ $title = "Gallery";
 	<h2>GALLERY</h2>
 	<h3>
 	A great way to showcase the beauty and calmness of Casa Querencia Hot Spring Resort. Visitors moves  through a series <br>
-	of interconnected spaces which enables them to see the garden and swimming pools separately.Almost every angle of<br>
+	of interconnected spaces which enables them to see the garden and swimming pools separately. Almost every angle of<br>
 	this resort is adorned with lovely sceneries of nature that our guest would instantly experience serenity and relaxation</h3>
 	<?php require("components/gallery/video.php") ?>
 <?php require("components/gallery/pix.php") ?>
