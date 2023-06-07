@@ -194,7 +194,7 @@
 
     .home-section .text{
       display: inline-block;
-      color: #0000000;
+      color: #000;
       font-size: 25px;
       font-weight: 500;
       margin: 18px;
@@ -214,21 +214,21 @@
     </div>
     <ul class="nav-list">
   <li>
-    <a href="dashsummarypage.php">
+    <a href="DashSummaryPage.php">
       <i class='bx bx-pie-chart-alt-2'></i>
       <span class="links_name">Summary</span>
     </a>
     <span class="tooltip">Summary</span>
   </li>
     <li>
-    <a href="dashreservationspage.php">
+    <a href="DashReservationPage.php">
       <i class='bx bx-grid-alt'></i>
       <span class="links_name">Reservations</span>
     </a>
     <span class="tooltip">Reservations</span>
   </li>
   <li>
-    <a href="dashpendingpage.php"class="active">
+    <a href="DashPendingPage.php"class="active">
       <i class='bx bx-time'></i>
       <span class="links_name">Pending</span>
     </a>

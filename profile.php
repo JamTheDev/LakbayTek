@@ -133,6 +133,11 @@ $user = getUserBySession();
                         <th>Address</th>
                         <td><?= $user->address ?></td>
                     </tr>
+
+                    <tr>
+                        <th>Verified Email</th>
+                        <td><?= $user->verified ? "VERIFIED" : "NOT VERIFIED" ?></td>
+                    </tr>
                 </table>
             </div>
         </div>
@@ -140,7 +145,7 @@ $user = getUserBySession();
         <div class="right-section">
             <div class="form-container">
                 <h2>Edit Profile</h2>
-                <form action="update_profile.php" method="post">
+                <form method="post">
                     <label for="name">Name:</label>
                     <input type="text" id="name" name="name" value="<?= $user->username ?>">
 
@@ -157,6 +162,10 @@ $user = getUserBySession();
                     <input type="text" id="address" name="address" value="<?= $user->address ?>">
 
                     <input type="submit" value="Update Profile">
+
+                    <?php
+                        updateProfile($user, $_POST["name"], $_POST["email"], $_POST["address"]);
+                    ?>
                 </form>
             </div>
 

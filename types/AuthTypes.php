@@ -59,7 +59,8 @@ class User
             $_obj["address"],
             $_obj["gender"],
             $_obj["birthdate"],
-            $_obj["password"]
+            $_obj["password"],
+            $_obj["verified"],
         );
     }
 }

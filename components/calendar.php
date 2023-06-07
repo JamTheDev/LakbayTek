@@ -129,6 +129,13 @@
     let selectedDate;
     let dateHolderEl, dateInputHolderEl;
 
+    const customEvent = new CustomEvent('ondateselect', {
+      detail: {
+        selectedDate: "hello",
+        time: null
+      }
+    });
+
     async function fetchAllReservations() {
       const response = await fetch("./api/fetch_reservations.php", {
         method: "GET"
@@ -172,6 +179,7 @@
       var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
       var currentDate = new Date(firstDay);
 
+
       while (currentDate.getMonth() === date.getMonth() || currentDate < lastDay) {
         var row = document.createElement('tr');
 
@@ -196,34 +204,43 @@
             }
           }
 
+          // when cell is clicked...
           (function(cell) {
             cell.onclick = function() {
               if (cell.classList.contains("booked")) return;
               selectedDate = currdate;
-              dateHolderEl.textContent = toDateString(className);
-              dateInputHolderEl.value = toDateString(className);
+              let isoDate = currentDate.toISOString();
 
               if (cell == activeTdEl) {
                 activeTdEl.style.backgroundColor = "transparent";
-                dateInputHolderEl.value = null;
                 activeTdEl = null;
                 dateHolderEl.textContent = "PICK DATE";
+                document.dispatchEvent(createCustomEvent(null)); // Dispatch event with null detail
                 return;
               }
 
               if (!activeTdEl) {
                 activeTdEl = cell;
                 cell.style.backgroundColor = "orange";
-                calculateCheckOut();
+                document.dispatchEvent(createCustomEvent(isoDate)); // Dispatch event with selectedDate
                 return;
               }
-
-              calculateCheckOut();
 
               activeTdEl.style.backgroundColor = "transparent";
               cell.style.backgroundColor = "orange";
               activeTdEl = cell;
+              document.dispatchEvent(createCustomEvent(isoDate)); // Dispatch event with selectedDate
             };
+
+            // Function to create the custom event with the given selectedDate
+            function createCustomEvent(selectedDate = null, time = null) {
+              return new CustomEvent('ondateselect', {
+                detail: {
+                  selectedDate: selectedDate,
+                  time: time
+                }
+              });
+            }
           })(cell);
 
           row.appendChild(cell);
@@ -240,8 +257,7 @@
 
       console.log(reservations)
       var availabilityEntry = reservations.find(function(entry) {
-        console.log(entry.date.split(" ")[0], formattedDate)
-        return entry.date.split(" ")[0] == formattedDate;
+        return entry.check_in_date.split(" ")[0] == formattedDate;
       });
 
       return availabilityEntry ? 'booked' : '';

@@ -7,6 +7,15 @@ session_start();
 require_once("controller/AuthController.php");
 require_once("enums/ErrorEnums.php");
 require_once("types/AuthTypes.php");
+
+$user = getUserBySession();
+
+if ($user->user_id) {
+    $cookie_banner_name = $user->user_id . "_showbanner";
+    if ($_COOKIE[$cookie_banner_name]) {
+        setcookie($cookie_banner_name, false);
+    }
+}
 ?>
 
 <head>

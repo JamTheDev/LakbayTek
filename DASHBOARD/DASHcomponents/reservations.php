@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="style.css">
@@ -7,7 +8,7 @@
   <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    *{
+    * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -16,7 +17,7 @@
     }
 
     body {
-      background: #FDF8E5; 
+      background: #FDF8E5;
     }
 
     .sidebar {
@@ -30,23 +31,23 @@
       transition: all 0.5s ease;
     }
 
-    .sidebar.open{
+    .sidebar.open {
       width: 250px;
     }
 
-    .sidebar .logo-details{
+    .sidebar .logo-details {
       height: 60px;
       display: flex;
       align-items: center;
       position: relative;
     }
 
-    .sidebar .logo-details .icon{
+    .sidebar .logo-details .icon {
       opacity: 0;
       transition: all 0.5s ease;
     }
 
-    .sidebar .logo-details .logo_name{
+    .sidebar .logo-details .logo_name {
       color: #000000;
       font-size: 20px;
       font-weight: 600;
@@ -55,11 +56,11 @@
     }
 
     .sidebar.open .logo-details .icon,
-    .sidebar.open .logo-details .logo_name{
+    .sidebar.open .logo-details .logo_name {
       opacity: 1;
     }
 
-    .sidebar .logo-details #btn{
+    .sidebar .logo-details #btn {
       position: absolute;
       top: 50%;
       right: 0;
@@ -72,11 +73,11 @@
       transition: all 0.5s ease;
     }
 
-    .sidebar.open .logo-details #btn{
+    .sidebar.open .logo-details #btn {
       text-align: right;
     }
 
-    .sidebar i{
+    .sidebar i {
       color: #000000;
       height: 60px;
       min-width: 50px;
@@ -85,18 +86,18 @@
       line-height: 60px;
     }
 
-    .sidebar .nav-list{
+    .sidebar .nav-list {
       margin-top: 20px;
       height: 100%;
     }
 
-    .sidebar li{
+    .sidebar li {
       position: relative;
       margin: 8px 0;
       list-style: none;
     }
 
-    .sidebar li .tooltip{
+    .sidebar li .tooltip {
       position: absolute;
       top: -20px;
       left: calc(100% + 15px);
@@ -113,7 +114,7 @@
       transition: 0s;
     }
 
-    .sidebar li:hover .tooltip{
+    .sidebar li:hover .tooltip {
       opacity: 1;
       pointer-events: auto;
       transition: all 0.4s ease;
@@ -121,11 +122,11 @@
       transform: translateY(-50%);
     }
 
-    .sidebar.open li .tooltip{
+    .sidebar.open li .tooltip {
       display: none;
     }
 
-    .sidebar li a{
+    .sidebar li a {
       display: flex;
       height: 100%;
       width: 100%;
@@ -136,7 +137,7 @@
       background: #EEC945;
     }
 
-    .sidebar li a:hover{
+    .sidebar li a:hover {
       display: flex;
       height: 100%;
       width: 100%;
@@ -147,7 +148,7 @@
       background: #013220;
     }
 
-    .sidebar li a .links_name{
+    .sidebar li a .links_name {
       color: black;
       font-size: 15px;
       font-weight: 400;
@@ -157,25 +158,25 @@
       transition: 0.4s;
     }
 
-    .sidebar.open li a .links_name{
+    .sidebar.open li a .links_name {
       opacity: 1;
       pointer-events: auto;
     }
 
     .sidebar li a:hover .links_name,
-    .sidebar li a:hover i{
+    .sidebar li a:hover i {
       transition: all 0.5s ease;
       color: #EEC945;
     }
 
-    .sidebar li i{
+    .sidebar li i {
       height: 50px;
       line-height: 50px;
       font-size: 18px;
       border-radius: 12px;
     }
 
-    .home-section{
+    .home-section {
       position: fixed;
       background: #E4E9F7;
       height: 100%;
@@ -184,28 +185,30 @@
       width: calc(100% - 78px);
       transition: all 0.5s ease;
       z-index: 2;
-      overflow-y: scroll; /* Enable vertical scrolling */
+      overflow-y: scroll;
+      /* Enable vertical scrolling */
     }
 
-    .sidebar.open ~ .home-section{
+    .sidebar.open~.home-section {
       left: 250px;
       width: calc(100% - 250px);
     }
 
-    .home-section .text{
+    .home-section .text {
       display: inline-block;
-      color: #0000000;
+      color: #000;
       font-size: 25px;
       font-weight: 500;
       margin: 18px;
     }
-	
-  .nav-list li a.active {
-    background: #7EBB74;
-	font-color: #EEC945;
-  }
-</style>
+
+    .nav-list li a.active {
+      background: #7EBB74;
+      font-color: #EEC945;
+    }
+  </style>
 </head>
+
 <body>
   <div class="sidebar">
     <div class="logo-details">
@@ -213,27 +216,27 @@
       <i class='bx bx-menu' id="btn"></i>
     </div>
     <ul class="nav-list">
-  <li>
-    <a href="dashsummarypage.php">
-      <i class='bx bx-pie-chart-alt-2'></i>
-      <span class="links_name">Summary</span>
-    </a>
-    <span class="tooltip">Summary</span>
-  </li>
-    <li>
-    <a href="dashreservationspage.php" class="active">
-      <i class='bx bx-grid-alt'></i>
-      <span class="links_name">Reservations</span>
-    </a>
-    <span class="tooltip">Reservations</span>
-  </li>
-  <li>
-    <a href="dashpendingpage.php">
-      <i class='bx bx-time'></i>
-      <span class="links_name">Pending</span>
-    </a>
-    <span class="tooltip">Pending</span>
-  </li>
+      <li>
+        <a href="DashSummaryPage.php">
+          <i class='bx bx-pie-chart-alt-2'></i>
+          <span class="links_name">Summary</span>
+        </a>
+        <span class="tooltip">Summary</span>
+      </li>
+      <li>
+        <a href="DashReservationPage.php">
+          <i class='bx bx-grid-alt'></i>
+          <span class="links_name">Reservations</span>
+        </a>
+        <span class="tooltip">Reservations</span>
+      </li>
+      <li>
+        <a href="DashPendingPage.php" class="active">
+          <i class='bx bx-time'></i>
+          <span class="links_name">Pending</span>
+        </a>
+        <span class="tooltip">Pending</span>
+      </li>
 
 
   </div>
@@ -253,6 +256,7 @@
       sidebar.classList.toggle("open");
       menuBtnChange();
     });
+
     function menuBtnChange() {
       if (sidebar.classList.contains("open")) {
         closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
@@ -262,4 +266,5 @@
     }
   </script>
 </body>
+
 </html>

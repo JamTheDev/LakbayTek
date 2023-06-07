@@ -21,13 +21,17 @@
 
   .__details {
     width: 50%;
-    height: 50vh;
+    height: 80vh;
     padding: 50px 30px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .container {
     width: 100%;
-    margin: 50px auto;
+    margin: 20px auto;
   }
 
   .container label {
@@ -37,10 +41,19 @@
 
   .container input[type="time"] {
     width: 50%;
-    padding: 8px;
+    height: 100%;
+    padding: 2px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+
+  .__curr-sel {
+    background-color: lightcoral;
+    padding: 5px;
+    text-align: center;
+    color: white;
+    font-family: "Metropolis Black";
   }
 
   .navigation-buttons {
@@ -61,7 +74,7 @@
 
   .navigation-buttons>button:hover {
     width: fit-content;
-   
+
   }
 
   .navigation-buttons>button {
@@ -71,10 +84,38 @@
   .__date-summary,
   .__checkout-summary,
   .__inp {
-    padding: 10px 0px;
+    padding: 5px 0px;
+  }
+
+  .__buttons>button {
+    width: 100%;
+    margin: 5px 0;
+    border: none;
+    color: #000;
+    background-color: #EEC945;
+    padding: 10px 40px;
+    text-align: center;
+    font-family: "Metropolis";
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    cursor: pointer;
+    box-shadow: 0px 2px 5px #888888;
+    transition-duration: 0.3s;
+  }
+
+  .__buttons>button:hover {
+    color: #fff;
+    background-color: #7EBB74;
+    padding: 10px 40px;
+    transition-duration: 0.3s;
   }
 
   @media only screen and (max-width: 900px) {
+    .date-bg {
+      height: fit-content;
+    }
+
     .date-card {
       display: flex;
       flex-direction: column-reverse;
@@ -84,6 +125,10 @@
   }
 
   @media only screen and (max-width: 700px) {
+    .date-bg {
+      height: 1000px;
+    }
+
     .date-card {
       display: flex;
       flex-direction: column-reverse;
@@ -126,19 +171,38 @@
         <span>Select a date for the reservation!</span>
       </div>
 
+      <div class="__curr-sel">
+        <span>SELECTING CHECK-IN DATE</span>
+      </div>
+
       <div class="container">
-        <div class="__inp">
-          Check-in: <input type="time" id="time" name="time">
-          <input type="text" name="date" class="inp-date" value="" hidden>
+        <h3>Check-in</h3>
+        <div class="__date-summary">
+          <span>Date: </span>
+          <span class="__ci-date-span">PICK DATE</span>
         </div>
+
+        <div class="__inp">
+          Time: <input type="time" id="time" name="time">
+          <input type="text" name="date" class="__ci-inp-date" value="" hidden>
+        </div>
+
+        <h3>Check-out</h3>
 
         <div class="__date-summary">
           <span>Date: </span>
-          <span class="__date-span">PICK DATE</span>
+          <span class="__co-date-span">PICK DATE</span>
         </div>
-        <div class="__checkout-summary">
-          <span>Check-out: </span>
-          <span class="__checkout-span">NO TIME SELECTED</span>
+
+        <div class="__inp">
+          Time: <input type="time" id="time" name="time" disabled>
+          <input type="text" name="date" class="__co-inp-date" value="" hidden>
+        </div>
+
+
+        <div class="__buttons">
+          <button type="button">SET CHECK IN</button>
+          <button type="button">SET CHECK OUT</button>
         </div>
       </div>
     </div>
@@ -162,23 +226,44 @@
   </div>
 
   <script>
-    const timeEl = document.querySelector(".__checkout-span");
-    const dateEl = document.querySelector(".__date-span");
+    // find elements for check-in & check-out dates/time
+    let dateSelectionMode = "ci";
+    let _selectedDate, timeInputValue;
+    const checkInDateSpan = document.querySelector(".__ci-date-span");
+    const checkOutDateSpan = document.querySelector(".__co-date-span");
+
+    document.addEventListener('ondateselect', (date, time) => {
+      _selectedDate = date ?? _selectedDate;
+      console.log(_selectedDate)
+      let [onlyTime, dateAndTime] = calculateCheckOut(new Date(_selectedDate));
+      // check-in
+      if (dateSelectionMode == "ci") {
+        checkInDateSpan.textContent = dateAndTime;
+      }
+
+      // check-out
+      if (dateSelectionMode == "co") {
+
+      }
+
+    });
+
     const dateInputEl = document.querySelector(".inp-date");
     const timeInputEl = document.getElementById("time");
-    let timeInputValue = "";
     var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-    function calculateCheckOut() {
-      let timeParts = timeInputValue.split(/:|\s/);
-      let hours = parseInt(timeParts[0], 10);
-      let minutes = parseInt(timeParts[1], 10);
+    function calculateCheckOut(date) {
+      let timeParts, hours, minutes;
+      if (timeInputValue == null) {
+        timeParts = timeInputValue.split(/:|\s/);
+        hours = parseInt(timeParts[0], 10);
+        minutes = parseInt(timeParts[1], 10);
 
-      let date = !dateInputEl.value ? new Date() : new Date(dateInputEl.value);
-      date.setHours(hours);
-      date.setMinutes(minutes);
+        date.setHours(hours);
+        date.setMinutes(minutes);
 
-      date.setHours(date.getHours() + 22);
+        date.setHours(date.getHours() + 22);
+      }
 
       let updatedHours = date.getHours();
       let updatedMinutes = date.getMinutes();
@@ -199,9 +284,9 @@
         updatedHours = 12;
       }
 
-      dateInputEl.value = formattedDate + " " + String(rawUpdatedHours).padStart(2, "0") + ":" + String(rawUpdatedMinutes).padStart(2, "0");
+      console.log(formattedDate + " " + String(rawUpdatedHours).padStart(2, "0") + ":" + String(rawUpdatedMinutes).padStart(2, "0"))
 
-      timeEl.textContent = formattedDate + " - " + String(updatedHours).padStart(2, "0") + ":" + String(updatedMinutes).padStart(2, "0") + " " + updatedAmPm;
+      return [String(updatedHours).padStart(2, "0") + ":" + String(updatedMinutes).padStart(2, "0") + " " + updatedAmPm, formattedDate + " " + String(rawUpdatedHours).padStart(2, "0") + ":" + String(rawUpdatedMinutes).padStart(2, "0")];
     }
 
     timeInputEl.oninput = function(e) {
