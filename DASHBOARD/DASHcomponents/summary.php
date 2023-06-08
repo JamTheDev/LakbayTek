@@ -214,21 +214,21 @@
     </div>
     <ul class="nav-list">
     <li>
-    <a href="DashSummaryPage.php">
+    <a href="DashSummaryPage.php" class="active">
       <i class='bx bx-pie-chart-alt-2'></i>
       <span class="links_name">Summary</span>
     </a>
     <span class="tooltip">Summary</span>
   </li>
     <li>
-    <a href="DashReservationPage.php">
+    <a href="DashReservationsPage.php">
       <i class='bx bx-grid-alt'></i>
       <span class="links_name">Reservations</span>
     </a>
     <span class="tooltip">Reservations</span>
   </li>
   <li>
-    <a href="DashPendingPage.php"class="active">
+    <a href="DashPendingPage.php">
       <i class='bx bx-time'></i>
       <span class="links_name">Pending</span>
     </a>

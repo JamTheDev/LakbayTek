@@ -224,14 +224,14 @@
         <span class="tooltip">Summary</span>
       </li>
       <li>
-        <a href="DashReservationPage.php">
+        <a href="DashReservationsPage.php"  class="active">
           <i class='bx bx-grid-alt'></i>
           <span class="links_name">Reservations</span>
         </a>
         <span class="tooltip">Reservations</span>
       </li>
       <li>
-        <a href="DashPendingPage.php" class="active">
+        <a href="DashPendingPage.php">
           <i class='bx bx-time'></i>
           <span class="links_name">Pending</span>
         </a>

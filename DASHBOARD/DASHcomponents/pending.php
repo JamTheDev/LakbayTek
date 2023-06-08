@@ -221,7 +221,7 @@
     <span class="tooltip">Summary</span>
   </li>
     <li>
-    <a href="DashReservationPage.php">
+    <a href="DashReservationsPage.php">
       <i class='bx bx-grid-alt'></i>
       <span class="links_name">Reservations</span>
     </a>
