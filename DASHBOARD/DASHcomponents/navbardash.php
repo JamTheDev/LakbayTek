@@ -20,11 +20,18 @@
 
     <div class="right">
         <div class="buttons">
-            <span class="text"> ADMIN </span>
-            
-        </div>
-    </div>
-
+            <a href="DashSummaryPage.php">ADMIN</a>
+            <a href="#" class="dropdown-toggle">
+                <i class="fa-solid fa-circle-user"></i>
+            </a>
+            <div class="dropdown-content">
+                <a href="#" class="">
+                        <?php if (verifyRememberMeToken()) : ?>
+                            <a href="profile.php">Sign Out</a>
+                        <?php else : ?>
+                            <a href="adminlogin.php">Log In</a>
+                        <?php endif; ?>
+            </div>
     <script>
         const dropdownToggle = document.querySelector('.dropdown-toggle');
         const dropdownContent = document.querySelector('.dropdown-content');
