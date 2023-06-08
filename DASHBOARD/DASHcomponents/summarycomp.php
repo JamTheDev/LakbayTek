@@ -89,18 +89,8 @@
 </head>
 <body>
     <?php
-    // Database connection and retrieving account data
-    $host = 'localhost';
-    $username = 'root';
-    $password = '';
-    $database = 'lakbaytek';
 
-    $conn = mysqli_connect($host, $username, $password, $database);
-    if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
-    }
-
-    $query = "SELECT * FROM users";
+    $query = "SELECT * FROM Users";
     $result = mysqli_query($conn, $query);
 
     $totalRegisteredUsers = mysqli_num_rows($result);

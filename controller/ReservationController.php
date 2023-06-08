@@ -60,7 +60,7 @@ function fetch_local_reservation(): Reservation
     return Reservation::from_assoc($jsonified);
 }
 
-function fetch_all_reservations(): array
+function fetch_all_reservations($user_id): array
 {
     global $conn;
     $reservation_arr = array();
@@ -69,8 +69,9 @@ function fetch_all_reservations(): array
         $conn->begin_transaction();
 
         $stmt = $conn->prepare(
-            "SELECT * FROM Reservations"
+            "SELECT * FROM Reservations WHERE user_id = ?"
         );
+
         $stmt->execute();
 
         $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -83,6 +84,59 @@ function fetch_all_reservations(): array
         return [Reservation::raise_error("Error: {$e->getMessage()}")];
     }
 }
+
+function fetch_all_pending_reservations($user_id): array
+{
+    global $conn;
+    $reservation_arr = array();
+
+    try {
+        $conn->begin_transaction();
+
+        $stmt = $conn->prepare(
+            "SELECT * FROM Reservations WHERE user_id = ? AND (payment_status = 'PENDING' OR payment_id IS NULL OR reservation_status <> 'ACCEPTED')"
+        );
+
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+
+        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->free_result();
+        $conn->commit();
+
+        return $result;
+    } catch (Exception $e) {
+        $conn->rollback();
+        return [Reservation::raise_error("Error: {$e->getMessage()}")];
+    }
+}
+
+function fetch_all_accepted_reservations($user_id): array
+{
+    global $conn;
+    $reservation_arr = array();
+
+    try {
+        $conn->begin_transaction();
+
+        $stmt = $conn->prepare(
+            "SELECT * FROM Reservations WHERE user_id = ? AND (payment_status = 'ACCEPTED' OR payment_id IS NOT NULL)"
+        );
+
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+
+        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->free_result();
+        $conn->commit();
+
+        return $result;
+    } catch (Exception $e) {
+        $conn->rollback();
+        return [Reservation::raise_error("Error: {$e->getMessage()}")];
+    }
+}
+
 
 
 function fetch_reservation($reservation_id): array

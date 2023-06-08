@@ -26,7 +26,7 @@
                     <a href="#" class="">
                         <?php if (verifyRememberMeToken()) : ?>
                             <a href="profile.php">View Profile</a>
-                            <a href="insert_reservation.php">Reservations</a>
+                            <a href="userhistory.php">Reservations</a>
                             <a href="logout.php">Sign out</a>
                         <?php else : ?>
                             <a href="#" class="" />
