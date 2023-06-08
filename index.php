@@ -8,9 +8,11 @@ require("config.php"); ?>
 
     <?php require("components/navbar.php") ?>
     <?php require("components/landing/carousel.php") ?>
-    <?php require("components/landing/services.php") ?>
     <?php require("components/landing/about.php") ?>
     <?php require("components/landing/testimonials.php") ?>
+    <?php require("components/landing/contact us.php") ?>
+    <?php require("components/landing/regulations.php") ?>
+
 
     <!-- CONTROL THE NAVBAR -->
     <script type="module">
