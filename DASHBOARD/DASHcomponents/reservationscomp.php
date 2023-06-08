@@ -1,5 +1,7 @@
+<?php $e = fetch_all_accepted_reservations(); ?>
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Availability Booking Calendar</title>
   <style>
@@ -124,7 +126,7 @@
       font-family: "Metropolis";
       text-align: left;
     }
-	
+
 
     .summary-section .booked {
       color: #0000000;
@@ -139,10 +141,12 @@
     }
   </style>
 </head>
+
 <body>
-  
+
   <div class="content">
-    <div class="calendar-section"> <h2>Availability Calendar</h2><br>
+    <div class="calendar-section">
+      <h2>Availability Calendar</h2><br>
       <div class="calendar">
         <div class="month-navigation">
           <button id="prevMonthBtn">&lt; Previous Month</button>
@@ -167,8 +171,13 @@
     </div>
 
     <div class="reservation-summary-container">
-      <h2>Total Number of Reservations</h2>
-      <span id="totalReservations"></span>
+      <h2>Total Number of Approved Reservations</h2>
+      <span id="totalReservations">
+        <?php
+
+        echo count($e) . " approved reservations for this year.";
+        ?>
+      </span>
     </div>
   </div>
 
@@ -179,26 +188,52 @@
         <thead>
           <tr class="columns">
             <th>User Name</th>
-            <th>Reserved Date</th>
-            <th>Time of Check-In</th>
+            <th>Package</th>
+            <th>Date of Check-In</th>
+            <th>Date of Check-Out</th>
+            <th>Reservation Status</th>
             <th>Payment Status</th>
-            <th>Action</th>
+            <th>Feedback</th>
           </tr>
         </thead>
-        <tbody id="reservationSummary"></tbody>
+        <tbody id="reservationSummary">
+          <?php foreach ($e as $r) : ?>
+            <tr>
+              <td><?= get_user($r['username']) ?></td>
+              <td> <?= $r["package_id"] ?> </td>
+              <td> <?= $r["check_in_date"] ?> </td>
+              <td> <?= $r["check_out_date"] ?> </td>
+              <td> <?= $r["reservation_status"] ?> </td>
+              <td> <?= $r["payment_status"] ?> </td>
+              <td> NONE </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
       </table>
     </div>
   </div>
 
-<script>
+  <script>
     // Availability data (dummy data for demonstration)
-    var availability = [
-      { date: '2023-06-01', status: 'booked', user: 'Arrabella Jane', time: '10:00 AM', payment: 'partial' },
-      { date: '2023-06-05', status: 'booked', user: 'Jam Emmanuel', time: '2:30 PM', payment: 'partial' },
-      { date: '2023-07-10', status: 'booked', user: 'Reiner Buenas', time: '11:00 AM', payment: 'partial' },
-      { date: '2023-06-15', status: 'booked', user: 'Mary Antoinette', time: '3:00 PM', payment: 'partial' },
-      { date: '2023-07-20', status: 'booked', user: 'Gwyneth Beatrice', time: '9:30 AM', payment: 'partial' },
-    ];
+
+
+    async function fetchAllReservations() {
+      const response = await fetch("./api/fetch_reservations.php", {
+        method: "GET"
+      });
+
+      if (response.ok) {
+        let x = await response.json();
+        return x;
+      }
+    }
+    let reservations;
+    (async () => {
+      reservations = await fetchAllReservations();
+      dateHolderEl = document.querySelector(".__date-span");
+      dateInputHolderEl = document.querySelector(".inp-date");
+      initCalendar();
+    })();
 
     var currentDate = new Date();
 
@@ -215,7 +250,10 @@
     // Function to display the current month
     function showMonth(date) {
       var monthElement = document.getElementById('currentMonth');
-      monthElement.textContent = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      monthElement.textContent = date.toLocaleDateString('en-US', {
+        month: 'long',
+        year: 'numeric'
+      });
 
       var calendarDaysElement = document.getElementById('calendarDays');
       calendarDaysElement.innerHTML = '';
@@ -250,60 +288,61 @@
 
     // Function to get the availability status for a given date
     function getAvailabilityStatus(date) {
-      var formattedDate = date.toISOString().split('T')[0];
+      var availabilityEntry = reservations.find(function(entry) {
+        var entryCheckInDate = new Date(entry.check_in_date.split(" ")[0]);
+        var entryCheckOutDate = new Date(entry.check_out_date.split(" ")[0]);
 
-      var availabilityEntry = availability.find(function(entry) {
-        return entry.date === formattedDate;
+        return entryCheckInDate <= date && date <= entryCheckOutDate;
       });
 
-      return availabilityEntry ? availabilityEntry.status : '';
+      return availabilityEntry ? 'booked' : '';
     }
 
-// Function to display the reservation summary
-function displayReservationSummary() {
-  var reservationSummaryElement = document.getElementById('reservationSummary');
-  reservationSummaryElement.innerHTML = '';
+    // Function to display the reservation summary
+    function displayReservationSummary() {
+      var reservationSummaryElement = document.getElementById('reservationSummary');
+      reservationSummaryElement.innerHTML = '';
 
-  availability.forEach(function(entry) {
-    if (entry.status === 'booked') {
-      var row = document.createElement('tr');
-      var userCell = document.createElement('td');
-      var dateCell = document.createElement('td');
-      var timeCell = document.createElement('td');
-      var paymentCell = document.createElement('td');
-      var actionCell = document.createElement('td');
-      var paymentStatus = entry.payment === 'full' ? 'Fully Paid' : 'Partial Payment';
+      availability.forEach(function(entry) {
+        if (entry.status === 'booked') {
+          var row = document.createElement('tr');
+          var userCell = document.createElement('td');
+          var dateCell = document.createElement('td');
+          var timeCell = document.createElement('td');
+          var paymentCell = document.createElement('td');
+          var actionCell = document.createElement('td');
+          var paymentStatus = entry.payment === 'full' ? 'Fully Paid' : 'Partial Payment';
 
-      userCell.textContent = entry.user;
-      dateCell.textContent = entry.date;
-      timeCell.textContent = entry.time;
-      paymentCell.textContent = paymentStatus;
+          userCell.textContent = entry.user;
+          dateCell.textContent = entry.date;
+          timeCell.textContent = entry.time;
+          paymentCell.textContent = paymentStatus;
 
-      if (entry.payment !== 'full') {
-        var markAsPaidButton = document.createElement('button');
-        markAsPaidButton.textContent = 'Mark as Fully Paid';
-        markAsPaidButton.addEventListener('click', function() {
-          markReservationAsPaid(entry);
-        });
+          if (entry.payment !== 'full') {
+            var markAsPaidButton = document.createElement('button');
+            markAsPaidButton.textContent = 'Mark as Fully Paid';
+            markAsPaidButton.addEventListener('click', function() {
+              markReservationAsPaid(entry);
+            });
 
-        actionCell.appendChild(markAsPaidButton);
-      }
+            actionCell.appendChild(markAsPaidButton);
+          }
 
-      row.appendChild(userCell);
-      row.appendChild(dateCell);
-      row.appendChild(timeCell);
-      row.appendChild(paymentCell);
-      row.appendChild(actionCell);
+          row.appendChild(userCell);
+          row.appendChild(dateCell);
+          row.appendChild(timeCell);
+          row.appendChild(paymentCell);
+          row.appendChild(actionCell);
 
-      if (entry.status === 'booked') {
-        row.classList.add('booked');
-      }
+          if (entry.status === 'booked') {
+            row.classList.add('booked');
+          }
 
-      reservationSummaryElement.appendChild(row);
+          reservationSummaryElement.appendChild(row);
+        }
+      });
     }
-  });
-}
- 
+
 
     // Function to mark a reservation as fully paid
     function markReservationAsPaid(reservation) {
@@ -327,10 +366,10 @@ function displayReservationSummary() {
 
     // Initialize the calendar
     initCalendar();
-	
-	
   </script>
 </body>
+
 </html>
 </body>
+
 </html>

@@ -192,8 +192,6 @@
           // Check availability status for the current date
           var availabilityStatus = getAvailabilityStatus(currentDate);
 
-
-
           if (availabilityStatus === 'available') {
             cell.classList.add('available');
           } else if (availabilityStatus === 'booked') {

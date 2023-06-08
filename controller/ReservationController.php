@@ -60,16 +60,16 @@ function fetch_local_reservation(): Reservation
     return Reservation::from_assoc($jsonified);
 }
 
-function fetch_all_reservations($user_id): array
+
+function fetch_db_reservations(): array
 {
     global $conn;
-    $reservation_arr = array();
 
     try {
         $conn->begin_transaction();
 
         $stmt = $conn->prepare(
-            "SELECT * FROM Reservations WHERE user_id = ?"
+            "SELECT * FROM Reservations"
         );
 
         $stmt->execute();
@@ -111,7 +111,7 @@ function fetch_all_pending_reservations($user_id): array
     }
 }
 
-function fetch_all_accepted_reservations($user_id): array
+function fetch_all_accepted_user_reservations($user_id): array
 {
     global $conn;
     $reservation_arr = array();
@@ -136,6 +136,32 @@ function fetch_all_accepted_reservations($user_id): array
         return [Reservation::raise_error("Error: {$e->getMessage()}")];
     }
 }
+
+function fetch_all_accepted_reservations(): array
+{
+    global $conn;
+    $reservation_arr = array();
+
+    try {
+        $conn->begin_transaction();
+
+        $stmt = $conn->prepare(
+            "SELECT * FROM Reservations WHERE (payment_status = 'ACCEPTED' OR payment_id IS NOT NULL)"
+        );
+
+        $stmt->execute();
+
+        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->free_result();
+        $conn->commit();
+
+        return $result;
+    } catch (Exception $e) {
+        $conn->rollback();
+        return [Reservation::raise_error("Error: {$e->getMessage()}")];
+    }
+}
+
 
 
 

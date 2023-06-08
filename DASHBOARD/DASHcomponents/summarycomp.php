@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -87,6 +88,7 @@
         }
     </style>
 </head>
+
 <body>
     <?php
 
@@ -113,7 +115,7 @@
 
         <div class="dashboard-box">
             <h2 class="dashboard-title">Total Earnings</h2><br>
-            <span>Php: <!-- Add the total earnings dynamically --></span>
+            <span class="total-earnings">Php: <!-- Add the total earnings dynamically --></span>
         </div>
     </div>
 
@@ -214,25 +216,35 @@
             accountModal.style.display = 'none';
         });
 
+        fetch("./api/total_reservation_sum.php").then((result) => result.json()).then((resultTalaga) => document.querySelector(".total-earnings").textContent = `PHP ${resultTalaga["total_price"]}`)
+
         const ctx = document.getElementById('reservation-chart').getContext('2d');
-        const reservationsData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [
-                {
-                    label: 'Reservations per Month',
-                    data: [5, 10, 15, 20, 25, 30, 4, 1, 6, 12, 10, 10],
-                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                    borderColor: 'rgba(0, 123, 255, 1)',
-                    borderWidth: 1
-                }
-            ]
-        };
-        const reservationsConfig = {
-            type: 'line',
-            data: reservationsData,
-            options: {}
-        };
-        new Chart(ctx, reservationsConfig);
+
+        // Make a fetch request to fetch the reservation count data from reservation_count.php
+        fetch('./api/reservation_count.php')
+            .then(response => response.json())
+            .then(reservationCounts => {
+                const reservationsData = {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Reservations per Month',
+                        data: [...reservationCounts],
+                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }]
+                };
+                const reservationsConfig = {
+                    type: 'line',
+                    data: reservationsData,
+                    options: {}
+                };
+                new Chart(ctx, reservationsConfig);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     </script>
 </body>
+
 </html>
