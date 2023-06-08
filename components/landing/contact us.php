@@ -1,99 +1,74 @@
-<style>
-    section.testimonials {
-        padding: 70px 100px 70px 100px;
-    }
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: "Metropolis", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    section.testimonials>.__testimonials-titles {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+        section.testimonials {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("https://asl.law/wp-content/uploads/2022/05/bigstock-Smiling-Group-Of-Diverse-Frien-433580726-scaled.jpg");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+        }
 
-    section.testimonials>.__testimonials-titles>.title {
-        font-family: "Metropolis Black";
-        font-size: 3em;
-    }
+        .title {
+            font-family: "Metropolis Black", sans-serif;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
 
-    section.testimonials>.__testimonials-titles>.subtitle {
-        font-family: "Metropolis";
-        font-size: 1.5em;
-        letter-spacing: 4px;
-    }
+        .subtitle {
+            font-size: 1.5em;
+            margin-bottom: 50px;
+            letter-spacing: 4px;
+        }
 
-    section.testimonials>.__entry-card-group {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 50em;
-    }
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
 
-    section.testimonials>.__entry-card-group>.__entry-card {
-        width: 70%;
-        height: 80%;
+        .contact-info a {
+            color: white;
+            text-decoration: none;
+        }
 
-        display: flex;
-        flex-direction: row;
-    }
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
 
-    section.testimonials>.__entry-card-group>.__entry-card>* {
-        flex: 1;
-    }
+        .contact-info .phone {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
 
-    section.testimonials>.__entry-card-group>.__entry-card>.__image {
-        object-fit: cover;
-        overflow: hidden;
-    }
+        .contact-info .message {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <section class="testimonials">
+        <h1 class="title">CONTACT US!</h1>
+        <h2 class="subtitle">INQUIRE FOR MORE DETAILS AND INFORMATION</h2>
 
-    section.testimonials>.__entry-card-group>.__entry-card>.__text-content {
-        padding: 2%;
-
-        display: flex;
-        flex-direction: column;
-
-        background-color: #D9D9D9;
-    }
-
-    section.testimonials>.__entry-card-group>.__entry-card>.__text-content>.__caption {
-        font-family: "Metropolis Black";
-        font-size: 300%;
-    }
-
-    section.testimonials>.__entry-card-group>.__entry-card>.__text-content>.__author {
-        font-family: "Metropolis";
-        font-size: 150%;
-    }
-
-    section.testimonials>.__entry-card-group>.__entry-card>.__text-content>.__datetime {
-        font-family: "Metropolis";
-        font-style: italic;
-        font-size: 80%;
-        color: black;
-        opacity: 0.5;
-    }
-
-    section.testimonials>.__entry-card-group>.__entry-card>.__text-content>.__content {
-        font-family: "Metropolis";
-        font-size: 120%;
-        line-height: 160%;
-    }
-</style>
-
-<section class="testimonials">
-    <div class="__testimonials-titles">
-        <span class="title">CONTACT US!</span>
-        <span class="subtitle">INQUIRE FOR MORE DETAILS AND INFORMATION</span>
-    </div>
-
-    <section class="__entry-card-group">
-        <div class="__entry-card">
-            <img class="__image" src="https://asl.law/wp-content/uploads/2022/05/bigstock-Smiling-Group-Of-Diverse-Frien-433580726-scaled.jpg" />
-            <div class="__text-content">
-                
-                <span class="__content">Visit our <a href="https://www.facebook.com/CasaQuerenciaPrivateHotSpring">Facebook Page</a> or reach us out at <a href= "tel: 09275739292">09275739292</a> for more inquiries!
-                    <br><br>
-                   Looking forward to see you here at Casa Querencia Hot Spring Resort! </span>
-            </div>
+        <div class="contact-info">
+            <p class="phone">Call us at <a href="tel:09275739292">09275739292</a></p>
+            <p class="message">Send us a message on our <a href="https://www.facebook.com/CasaQuerenciaPrivateHotSpring">Facebook Page</a></p>
         </div>
     </section>
-</section>
+</body>
+</html>
