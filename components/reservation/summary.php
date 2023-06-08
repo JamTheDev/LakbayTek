@@ -165,7 +165,7 @@ $reservation_id = genid(9);
             <div class="__fields">
                 <span class="__field-name">Payment Amount:</span>
                 <span class="__field-value"> PHP <?php
-                                                    $ts = strtotime($_POST["date"]);
+                                                    $ts = strtotime($_SESSION["check_in_date"]);
                                                     $dayOfWeek = date('N', $ts);
                                                     $d1 = new DateTime($_SESSION["check_in_date"]);
                                                     $d2 = new DateTime($_SESSION["check_out_date"]);
@@ -182,12 +182,11 @@ $reservation_id = genid(9);
         <div class="__button-row">
             <button type="button" class="__back" onclick="changePage('date')">Back</button>
             <button type="button" class="__pay-later" onclick="insertIntoDb()">Pay later</button>
-            <button type="button" class="__pay-now">Pay Now</button>
+            <button type="button" class="__pay-now" onclick="insertIntoDbThenPayment()">Pay Now</button>
         </div>
 
         <script>
-            async function insertIntoDb() {
-                console.log("asdjaodj");
+            async function insertIntoDbThenPayment() {
                 try {
                     const response = await fetch("./api/insert_reservation.php", {
                         method: "POST",
@@ -202,7 +201,37 @@ $reservation_id = genid(9);
                     })
 
                     if (response.status == 200) {
-                        window.location.href = "index.php";
+                        Swal.fire("Reservation placed!", "Proceeding to payment page", "success").then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "paying_page.php?reservation=<?php echo $reservation_id ?>";
+                            }
+                        })
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            async function insertIntoDb() {
+                try {
+                    const response = await fetch("./api/insert_reservation.php", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            "reservation_id": "<?php echo $reservation_id ?>",
+                            "package_id": "<?php echo $_SESSION['package_id']; ?>",
+                            "user_id": "<?php echo getUserBySession()->user_id; ?>",
+                            "check_in_date": "<?php echo $_SESSION["check_in_date"]; ?>",
+                            "check_out_date": "<?php echo $_SESSION["check_out_date"]; ?>",
+                            "payment_status": "UNPAID",
+                        })
+                    })
+
+                    if (response.status == 200) {
+                        Swal.fire("Reservation placed!", "Go back to main menu", "success").then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "index.php";
+                            }
+                        })
                     }
                 } catch (e) {
                     console.error(e);

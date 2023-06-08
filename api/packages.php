@@ -12,7 +12,8 @@ include("types/ReservationType.php");
 include("../types/ReservationType.php");
 include("../types/PackageType.php");
 
-require_once("../controller/PackagesController.php");
+include("../controller/PackagesController.php");
+include("controller/PackagesController.php");
 header("Content-Type: application/json");
 
 echo json_encode(get_all_packages());

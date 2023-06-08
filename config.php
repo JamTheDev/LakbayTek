@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(E_ALL);
 define('BASE_PATH', dirname(__FILE__));
 session_set_cookie_params(0);
 session_start();
@@ -17,12 +17,6 @@ require_once("types/AuthTypes.php");
 
 $user = getUserBySession();
 
-if ($user->user_id) {
-    $cookie_banner_name = $user->user_id . "_showbanner";
-    if ($_COOKIE[$cookie_banner_name]) {
-        setcookie($cookie_banner_name, false);
-    }
-}
 ?>
 
 <head>
@@ -32,7 +26,9 @@ if ($user->user_id) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" type="image/png" href="assets/logos/cq_logo.png">
     <title><?php echo $title ?? "Welcome"; ?> | Casa Querencia </title>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
     <style>
         :root {
             --primary: #8FEA93;

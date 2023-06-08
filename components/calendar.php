@@ -300,11 +300,14 @@
 
     // Function to get the availability status for a given date
     function getAvailabilityStatus(date) {
-      var formattedDate = date.toISOString().split('T')[0];
 
-      console.log(reservations)
+      console.log(reservations);
+
       var availabilityEntry = reservations.find(function(entry) {
-        return entry.check_in_date.split(" ")[0] == formattedDate;
+        var entryCheckInDate = new Date(entry.check_in_date.split(" ")[0]);
+        var entryCheckOutDate = new Date(entry.check_out_date.split(" ")[0]);
+
+        return entryCheckInDate <= date && date <= entryCheckOutDate;
       });
 
       return availabilityEntry ? 'booked' : '';

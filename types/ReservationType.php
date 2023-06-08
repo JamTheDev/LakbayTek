@@ -31,20 +31,13 @@ class Reservation
         $this->reservation_id = $reservation_id;
         $this->package_id = $package_id;
         $this->user_id = $user_id;
-        $this->reservation_status = 0;
-        $this->payment_status = 0;
+        $this->reservation_status = $reservation_status;
+        $this->payment_status = $payment_status;
         $this->ERR_CODE = $ERR_CODE;
         $this->check_in_date = $check_in_date;
         $this->check_out_date = $check_out_date;
     }
 
-    public function fetch_user()
-    {
-    }
-
-    public function fetch_package()
-    {
-    }
 
     public static function create_empty()
     {

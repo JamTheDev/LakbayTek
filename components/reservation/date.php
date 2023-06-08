@@ -277,6 +277,10 @@
       // check-out
       if (dateSelectionMode == "co") {
         checkOutDateSpan.textContent = dateAndTime;
+
+        saveToCookie({
+          "check_out_date": dateAndTime + " " + (onlyTime ?? "00:00"),
+        })
       }
 
 
@@ -372,3 +376,6 @@
 
 </section>
 
+<?php
+echo $_SESSION["check_in_date"] . "<br>";
+echo $_SESSION["check_out_date"] . "<br>";

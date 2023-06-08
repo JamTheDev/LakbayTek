@@ -60,7 +60,7 @@ function fetch_local_reservation(): Reservation
     return Reservation::from_assoc($jsonified);
 }
 
-function fetch_db_reservations(): array
+function fetch_all_reservations(): array
 {
     global $conn;
     $reservation_arr = array();
@@ -81,5 +81,64 @@ function fetch_db_reservations(): array
     } catch (Exception $e) {
         $conn->rollback();
         return [Reservation::raise_error("Error: {$e->getMessage()}")];
+    }
+}
+
+
+function fetch_reservation($reservation_id): array
+{
+    global $conn;
+    $reservation_arr = array();
+
+    try {
+        $conn->begin_transaction();
+
+        $stmt = $conn->prepare(
+            "SELECT * FROM Reservations where reservation_id = ?"
+        );
+        $stmt->bind_param("s", $reservation_id);
+        $stmt->execute();
+
+        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $conn->commit();
+        return $result;
+    } catch (Exception $e) {
+        $conn->rollback();
+        return [Reservation::raise_error("Error: {$e->getMessage()}")];
+    }
+}
+
+function create_payment($user_id, $image_path, $reference_number): bool
+{
+    global $conn;
+
+    try {
+        $conn->begin_transaction();
+
+        // Insert the payment into the payments table
+        $stmt = $conn->prepare("
+            INSERT INTO Payment (user_id, image_path, reference_number)
+            VALUES (?, ?, ?)
+        ");
+        $stmt->bind_param("sss", $user_id, $image_path, $reference_number);
+        $stmt->execute();
+
+        $payment_id = $stmt->insert_id;
+
+        // Update the reservation with the payment_id
+        $stmt = $conn->prepare("
+            UPDATE Reservations
+            SET payment_id = ?
+            WHERE reservation_id = ?
+        ");
+        $stmt->bind_param("is", $payment_id, $reservation_id);
+        $stmt->execute();
+
+        $conn->commit();
+        return true;
+    } catch (Exception $e) {
+        $conn->rollback();
+        echo "Error: " . $e->getMessage();
+        return false;
     }
 }
