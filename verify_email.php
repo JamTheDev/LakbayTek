@@ -1,5 +1,5 @@
 <?php
-require("controller/AuthController.php");
+require("config.php");
 
 $hasToken = verifyRememberMeToken();
 
@@ -22,9 +22,6 @@ if (!$hasToken) {
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <?php require("config.php") ?>
-</head>
 
 <body>
     <?php require("components/navbar.php") ?>

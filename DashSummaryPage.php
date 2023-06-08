@@ -1,10 +1,14 @@
 <?php
+$adminPage = true;
 $title = "Dashboard Summary";
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<?php require("config.php") ?>
+<?php 
+$adminPage = true;
+require("config.php");
+?>
 <body>
 <?php require("DASHBOARD/DASHcomponents/navbardash.php") ?> 
     <?php require("DASHBOARD/DASHcomponents/summary.php") ?>

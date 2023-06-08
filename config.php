@@ -17,6 +17,13 @@ require_once("types/AuthTypes.php");
 
 $user = getUserBySession();
 
+if (isset($adminPage) && $adminPage == true) {
+    if (!boolval($user->is_admin)) {
+        header("Location: index.php");
+        exit;
+    }
+}
+
 ?>
 
 <head>

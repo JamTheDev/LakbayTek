@@ -427,8 +427,10 @@ function sendVerificationEmail(string $email, string $token): bool
 
         // Email content
         $mail->isHTML(true);
-        $mail->Subject = 'Email Verification';
-        $mail->Body = "Click the following link to verify your email: <a href=\"localhost/LakbayTek/verify_token.php?token=$token\">Verify Email</a>";
+        $mail->Subject = 'Casa Querencia | Email Verification';
+        $mail->Body = "
+        <h1> Verify your email </h1>
+        Click the following link to verify your email: <a href=\"localhost/LakbayTek/verify_email.php?token=$token\">Verify Email</a>";
 
         $mail->send();
 

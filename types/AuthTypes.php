@@ -16,6 +16,7 @@ class User
     public mixed $date;
     public mixed $password;
     public mixed $verified;
+    public mixed $is_admin;
 
     public mixed $ERR_CODE = AuthenticationErrors::None;
 
@@ -28,6 +29,7 @@ class User
         mixed $date = NULL,
         mixed $password = NULL,
         mixed $verified = NULL,
+        mixed $is_admin = NULL,
         mixed $ERR_CODE = AuthenticationErrors::None
     ) {
         $this->user_id = $user_id;
@@ -38,6 +40,7 @@ class User
         $this->date = $date;
         $this->password = $password;
         $this->verified = $verified;
+        $this->is_admin = $is_admin;
         $this->ERR_CODE = $ERR_CODE;
     }
 
@@ -47,7 +50,7 @@ class User
 
     public static function raise_error(mixed $err): User
     {
-        return new self(NULL, NULL, NULL, NULL, NULL, NULL, NULL,  NULL, $err);
+        return new self(NULL, NULL, NULL, NULL, NULL, NULL, NULL,  NULL, NULL, $err);
     }
 
     public static function from_assoc(mixed $_obj): User
@@ -61,6 +64,7 @@ class User
             $_obj["birthdate"],
             $_obj["password"],
             $_obj["verified"],
+            $_obj["is_admin"],
         );
     }
 }

@@ -1,4 +1,5 @@
 <?php
+$adminPage = true;
 $title = "Dashboard Reservations";
 ?>
 
